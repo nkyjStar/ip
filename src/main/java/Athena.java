@@ -8,7 +8,7 @@ public class Athena {
             + "/_/   \\_\\\\__|_| |_|\\___|_| |_|\\__,_|\n";
     private static String pageBreak = "____________________________________________________________";
 
-    public static class out {
+    private static class out {
         // Send greeting message
         private static void greeting() {
             System.out.println(pageBreak);
@@ -43,16 +43,20 @@ public class Athena {
     }
 
     // Echoes user input
-    private static boolean isEchoInput(Scanner in) {
+    private static boolean isSessionEnd(Scanner in) {
         String line = getInput(in);
 
         // Check if user typed bye
         if (line.equalsIgnoreCase("bye")) {
-            return false;
+            return true;
         }
 
-        out.println(line);
-        return true;
+        // Parse input and invoke respective function
+        if (line.equalsIgnoreCase("list")) {
+
+        }
+
+        return false;
     }
 
     public static void main(String[] args) {
@@ -62,7 +66,7 @@ public class Athena {
         Scanner in = new Scanner(System.in);
 
         // Keep querying input till "bye"
-        while (isEchoInput(in))
+        while (!isSessionEnd(in))
             ;
 
         out.farewell();
