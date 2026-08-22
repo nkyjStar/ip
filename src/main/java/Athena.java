@@ -1,34 +1,45 @@
 import java.util.Scanner;
 
 public class Athena {
-    private static String banner = "    _    _   _                    \n"
+    private static final String BANNER = "    _    _   _                    \n"
             + "   / \\  | |_| |__   ___ _ __   __ _ \n"
             + "  / _ \\ | __| '_ \\ / _ \\ '_ \\ / _` |\n"
             + " / ___ \\| |_| | | |  __/ | | | (_| |\n"
             + "/_/   \\_\\\\__|_| |_|\\___|_| |_|\\__,_|\n";
-    private static String pageBreak = "____________________________________________________________";
+    private static final String PAGE_BREAK = "____________________________________________________________";
+    private static final String[] inputList = new String[100];
+    private static int inputListSize = 0;
 
-    private static class out {
+    private static class Output {
         // Send greeting message
         private static void greeting() {
-            System.out.println(pageBreak);
-            System.out.println(banner);
+            System.out.println(PAGE_BREAK);
+            System.out.println(BANNER);
             System.out.println("I have answered your summons. The name is Athena.");
             System.out.println("For what purpose have you called upon me?");
-            System.out.println(pageBreak);
+            System.out.println(PAGE_BREAK);
         }
 
         // Send farewell message
         private static void farewell() {
             System.out.println("\tI shall take my leave.");
-            System.out.println(pageBreak);
+            System.out.println(PAGE_BREAK);
         }
 
         // Output message
         private static void println(String message) {
             System.out.print("\t");
             System.out.println(message);
-            System.out.println(pageBreak);
+            System.out.println(PAGE_BREAK);
+        }
+
+        // Print list
+        private static void printList() {
+            System.out.println("\tYou have added...");
+            for (int i = 0; i < inputListSize; i++) {
+                System.out.printf("\t%d. %s%n", i + 1, inputList[i]);
+            }
+            System.out.println(PAGE_BREAK);
         }
     }
 
@@ -37,39 +48,47 @@ public class Athena {
         // Echo user input
         System.out.println();
         String line = in.nextLine();
-        System.out.println(pageBreak);
+        System.out.println(PAGE_BREAK);
 
         return line;
     }
 
     // Echoes user input
-    private static boolean isSessionEnd(Scanner in) {
+    private static boolean parseInput(Scanner in) {
         String line = getInput(in);
 
         // Check if user typed bye
         if (line.equalsIgnoreCase("bye")) {
-            return true;
+            return false;
         }
 
         // Parse input and invoke respective function
         if (line.equalsIgnoreCase("list")) {
-
+            Output.printList();
+        } else if (line.isBlank()) {
+            Output.println("Please enter a non-empty task.");
+        } else if (inputListSize >= inputList.length) {
+            Output.println("There is insufficient space in your list!");
+        } else {
+            inputList[inputListSize++] = line;
+            Output.println("Added: " + line);
         }
 
-        return false;
+        return true;
     }
 
     public static void main(String[] args) {
-        out.greeting();
+        Output.greeting();
 
         // Create input scanner
         Scanner in = new Scanner(System.in);
 
         // Keep querying input till "bye"
-        while (!isSessionEnd(in))
-            ;
+        while (parseInput(in)) {
+            // Continue querying input
+        }
 
-        out.farewell();
+        Output.farewell();
         in.close();
     }
 }
