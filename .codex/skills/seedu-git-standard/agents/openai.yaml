@@ -1,0 +1,4 @@
+interface:
+  display_name: "SE-EDU Git Standard"
+  short_description: "Apply SE-EDU commit and branch rules"
+  default_prompt: "Use $seedu-git-standard for commits, commit messages, and branch names."
