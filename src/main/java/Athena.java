@@ -8,6 +8,7 @@ public class Athena {
             + "/_/   \\_\\\\__|_| |_|\\___|_| |_|\\__,_|\n";
     private static final String PAGE_BREAK = "____________________________________________________________";
     private static final String[] inputList = new String[100];
+    private static final boolean[] doneList = new boolean[100];
     private static int inputListSize = 0;
 
     private static class Output {
@@ -37,7 +38,8 @@ public class Athena {
         private static void printList() {
             System.out.println("\tYou have added...");
             for (int i = 0; i < inputListSize; i++) {
-                System.out.printf("\t%d. %s%n", i + 1, inputList[i]);
+                String status = doneList[i] ? "X" : " ";
+                System.out.printf("\t%d.[%s] %s%n", i + 1, status, inputList[i]);
             }
             System.out.println(PAGE_BREAK);
         }
@@ -65,6 +67,10 @@ public class Athena {
         // Parse input and invoke respective function
         if (line.equalsIgnoreCase("list")) {
             Output.printList();
+        } else if (line.toLowerCase().startsWith("mark ")) {
+            changeTaskStatus(line, true);
+        } else if (line.toLowerCase().startsWith("unmark ")) {
+            changeTaskStatus(line, false);
         } else if (line.isBlank()) {
             Output.println("Please enter a non-empty task.");
         } else if (inputListSize >= inputList.length) {
@@ -75,6 +81,29 @@ public class Athena {
         }
 
         return true;
+    }
+
+    // Changes the completion status of the task identified by its one-based number.
+    private static void changeTaskStatus(String line, boolean done) {
+        String command = done ? "mark" : "unmark";
+        String numberText = line.substring(command.length()).trim();
+        try {
+            int taskNumber = Integer.parseInt(numberText);
+            if (taskNumber < 1 || taskNumber > inputListSize) {
+                Output.println("Task number must be between 1 and " + inputListSize + ".");
+                return;
+            }
+
+            int taskIndex = taskNumber - 1;
+            doneList[taskIndex] = done;
+            if (done) {
+                Output.println("Nice! I've marked this task as done:\n  [X] " + inputList[taskIndex]);
+            } else {
+                Output.println("OK, I've marked this task as not done yet:\n  [ ] " + inputList[taskIndex]);
+            }
+        } catch (NumberFormatException exception) {
+            Output.println("Please provide a valid task number after " + command + ".");
+        }
     }
 
     public static void main(String[] args) {
