@@ -7,8 +7,7 @@ public class Athena {
             + " / ___ \\| |_| | | |  __/ | | | (_| |\n"
             + "/_/   \\_\\\\__|_| |_|\\___|_| |_|\\__,_|\n";
     private static final String PAGE_BREAK = "____________________________________________________________";
-    private static final String[] inputList = new String[100];
-    private static final boolean[] doneList = new boolean[100];
+    private static final Task[] inputList = new Task[100];
     private static int inputListSize = 0;
 
     private static class Output {
@@ -38,8 +37,7 @@ public class Athena {
         private static void printList() {
             System.out.println("\tYou have added...");
             for (int i = 0; i < inputListSize; i++) {
-                String status = doneList[i] ? "X" : " ";
-                System.out.printf("\t%d.[%s] %s%n", i + 1, status, inputList[i]);
+                System.out.printf("\t%d.%s%n", i + 1, inputList[i]);
             }
             System.out.println(PAGE_BREAK);
         }
@@ -76,7 +74,7 @@ public class Athena {
         } else if (inputListSize >= inputList.length) {
             Output.println("There is insufficient space in your list!");
         } else {
-            inputList[inputListSize++] = line;
+            inputList[inputListSize++] = new Task(line);
             Output.println("Added: " + line);
         }
 
@@ -95,11 +93,13 @@ public class Athena {
             }
 
             int taskIndex = taskNumber - 1;
-            doneList[taskIndex] = done;
+            Task task = inputList[taskIndex];
             if (done) {
-                Output.println("Nice! I've marked this task as done:\n  [X] " + inputList[taskIndex]);
+                task.markAsDone();
+                Output.println("Nice! I've marked this task as done:\n  " + task);
             } else {
-                Output.println("OK, I've marked this task as not done yet:\n  [ ] " + inputList[taskIndex]);
+                task.markAsNotDone();
+                Output.println("OK, I've marked this task as not done yet:\n  " + task);
             }
         } catch (NumberFormatException exception) {
             Output.println("Please provide a valid task number after " + command + ".");
