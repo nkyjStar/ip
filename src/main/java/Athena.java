@@ -1,5 +1,6 @@
 import java.util.Scanner;
 
+/** Runs the Athena command-line task manager. */
 public class Athena {
     private static final String BANNER = "    _    _   _                    \n"
             + "   / \\  | |_| |__   ___ _ __   __ _ \n"
@@ -7,9 +8,10 @@ public class Athena {
             + " / ___ \\| |_| | | |  __/ | | | (_| |\n"
             + "/_/   \\_\\\\__|_| |_|\\___|_| |_|\\__,_|\n";
     private static final String PAGE_BREAK = "____________________________________________________________";
-    private static final Task[] inputList = new Task[100];
-    private static int inputListSize = 0;
+    private static final Task[] tasks = new Task[100];
+    private static int taskCount = 0;
 
+    /** Formats and prints Athena's messages. */
     private static class Output {
         // Send greeting message
         private static void greeting() {
@@ -36,8 +38,8 @@ public class Athena {
         // Print list
         private static void printList() {
             System.out.println("\tYou have added...");
-            for (int i = 0; i < inputListSize; i++) {
-                System.out.printf("\t%d.%s%n", i + 1, inputList[i]);
+            for (int i = 0; i < taskCount; i++) {
+                System.out.printf("\t%d.%s%n", i + 1, tasks[i]);
             }
             System.out.println(PAGE_BREAK);
         }
@@ -71,10 +73,10 @@ public class Athena {
             changeTaskStatus(line, false);
         } else if (line.isBlank()) {
             Output.println("Please enter a non-empty task.");
-        } else if (inputListSize >= inputList.length) {
+        } else if (taskCount >= tasks.length) {
             Output.println("There is insufficient space in your list!");
         } else {
-            inputList[inputListSize++] = new Task(line);
+            tasks[taskCount++] = new Task(line);
             Output.println("Added: " + line);
         }
 
@@ -87,13 +89,13 @@ public class Athena {
         String numberText = line.substring(command.length()).trim();
         try {
             int taskNumber = Integer.parseInt(numberText);
-            if (taskNumber < 1 || taskNumber > inputListSize) {
-                Output.println("Task number must be between 1 and " + inputListSize + ".");
+            if (taskNumber < 1 || taskNumber > taskCount) {
+                Output.println("Task number must be between 1 and " + taskCount + ".");
                 return;
             }
 
             int taskIndex = taskNumber - 1;
-            Task task = inputList[taskIndex];
+            Task task = tasks[taskIndex];
             if (done) {
                 task.markAsDone();
                 Output.println("Nice! I've marked this task as done:\n  " + task);
@@ -106,6 +108,7 @@ public class Athena {
         }
     }
 
+    /** Starts Athena and processes commands until the user says goodbye. */
     public static void main(String[] args) {
         Output.greeting();
 

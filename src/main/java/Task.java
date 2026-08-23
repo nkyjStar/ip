@@ -1,7 +1,7 @@
 /** Represents a task and whether it has been completed. */
 public class Task {
-    protected String description;
-    protected boolean isDone;
+    private final String description;
+    private boolean isDone;
 
     /** Creates an unfinished task with the given description. */
     public Task(String description) {
