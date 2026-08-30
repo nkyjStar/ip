@@ -8,7 +8,8 @@ public class Athena {
             + " / ___ \\| |_| | | |  __/ | | | (_| |\n"
             + "/_/   \\_\\\\__|_| |_|\\___|_| |_|\\__,_|\n";
     private static final String PAGE_BREAK = "____________________________________________________________";
-    private static final Task[] tasks = new Task[100];
+    private static final int MAX_TASKS = 100;
+    private static final Task[] tasks = new Task[MAX_TASKS];
     private static int taskCount = 0;
 
     /** Formats and prints Athena's messages. */
