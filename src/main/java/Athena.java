@@ -67,7 +67,12 @@ public class Athena {
             return false;
         }
 
-        // Parse input and invoke respective function
+        handleCommand(line);
+        return true;
+    }
+
+    /** Interprets a command and invokes the corresponding task-manager operation. */
+    private void handleCommand(String line) {
         if (line.equalsIgnoreCase("list")) {
             // Print list
             output.printList();
@@ -85,8 +90,6 @@ public class Athena {
                         "Noted. I have added this task:\n    " + tasks[taskCount - 1] + "\n  Now you have " + taskCount
                                 + " tasks in the list");
         }
-
-        return true;
     }
 
     private boolean addTask(String line) {
