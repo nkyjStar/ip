@@ -92,8 +92,14 @@ public class Athena {
         if (formattedLine.equals("todo") || formattedLine.startsWith("todo ")) {
             String description = line.trim().substring("todo".length()).trim();
             tasks[taskCount++] = new Todo(description);
-        } else if (formattedLine.startsWith("deadline")) {
-            tasks[taskCount++] = new Deadline(line);
+        } else if (formattedLine.equals("deadline") || formattedLine.startsWith("deadline ")) {
+            try {
+                Task deadline = new Deadline(line);
+                tasks[taskCount++] = deadline;
+            } catch (IllegalArgumentException exception) {
+                Output.println(exception.getMessage());
+                return false;
+            }
         } else if (formattedLine.startsWith("event")) {
             tasks[taskCount++] = new Event(line);
         } else {
