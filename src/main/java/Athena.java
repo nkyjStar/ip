@@ -15,7 +15,6 @@ public class Athena {
 
     /** Formats and prints Athena's messages. */
     private class Output {
-        // Send greeting message
         private void greeting() {
             System.out.println(PAGE_BREAK);
             System.out.println(BANNER);
@@ -24,20 +23,17 @@ public class Athena {
             System.out.println(PAGE_BREAK);
         }
 
-        // Send farewell message
         private void farewell() {
             System.out.println("  I shall take my leave.");
             System.out.println(PAGE_BREAK);
         }
 
-        // Output message
         private void println(String message) {
             System.out.print("  ");
             System.out.println(message);
             System.out.println(PAGE_BREAK);
         }
 
-        // Print list
         private void printList() {
             System.out.println("  Here are the tasks in your list:");
             for (int i = 0; i < taskCount; i++) {
@@ -49,9 +45,7 @@ public class Athena {
 
     private final Output output = new Output();
 
-    // Get input from user using Scanner
     private String getInput(Scanner in) {
-        // Echo user input
         System.out.println();
         String line = in.nextLine();
         System.out.println(PAGE_BREAK);
@@ -59,11 +53,9 @@ public class Athena {
         return line;
     }
 
-    // Echoes user input
     private boolean parseInput(Scanner in) {
         String line = getInput(in);
 
-        // Check if user typed bye
         if (line.equalsIgnoreCase("bye")) {
             return false;
         }
@@ -77,13 +69,10 @@ public class Athena {
         String lowerCaseLine = line.toLowerCase(Locale.ROOT);
 
         if (line.equalsIgnoreCase("list")) {
-            // Print list
             output.printList();
         } else if (lowerCaseLine.startsWith("mark ")) {
-            // Mark task
             changeTaskStatus(line, true);
         } else if (lowerCaseLine.startsWith("unmark ")) {
-            // Unmark task
             changeTaskStatus(line, false);
         } else if (taskCount >= tasks.length) {
             output.println("There is insufficient space in your list!");
@@ -126,7 +115,6 @@ public class Athena {
         return true;
     }
 
-    // Changes the completion status of the task identified by its one-based number.
     private void changeTaskStatus(String line, boolean done) {
         String command = done ? "mark" : "unmark";
         String numberText = line.substring(command.length()).trim();
