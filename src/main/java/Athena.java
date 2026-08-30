@@ -24,22 +24,22 @@ public class Athena {
 
         // Send farewell message
         private static void farewell() {
-            System.out.println("\tI shall take my leave.");
+            System.out.println("  I shall take my leave.");
             System.out.println(PAGE_BREAK);
         }
 
         // Output message
         private static void println(String message) {
-            System.out.print("\t");
+            System.out.print("  ");
             System.out.println(message);
             System.out.println(PAGE_BREAK);
         }
 
         // Print list
         private static void printList() {
-            System.out.println("\tYou have added...");
+            System.out.println("  Here are the tasks in your list:");
             for (int i = 0; i < taskCount; i++) {
-                System.out.printf("\t%d.%s%n", i + 1, tasks[i]);
+                System.out.printf("  %d.%s%n", i + 1, tasks[i]);
             }
             System.out.println(PAGE_BREAK);
         }
@@ -66,18 +66,39 @@ public class Athena {
 
         // Parse input and invoke respective function
         if (line.equalsIgnoreCase("list")) {
+            // Print list
             Output.printList();
         } else if (line.toLowerCase().startsWith("mark ")) {
+            // Mark task
             changeTaskStatus(line, true);
         } else if (line.toLowerCase().startsWith("unmark ")) {
+            // Unmark task
             changeTaskStatus(line, false);
-        } else if (line.isBlank()) {
-            Output.println("Please enter a non-empty task.");
         } else if (taskCount >= tasks.length) {
             Output.println("There is insufficient space in your list!");
         } else {
-            tasks[taskCount++] = new Task(line);
-            Output.println("Added: " + line);
+            if (addTask(line))
+                Output.println(
+                        "Noted. I have added this task:\n    " + tasks[taskCount - 1] + "\n  Now you have " + taskCount
+                                + " tasks in the list");
+        }
+
+        return true;
+    }
+
+    private static boolean addTask(String line) {
+        String formattedLine = line.trim().toLowerCase();
+
+        if (formattedLine.equals("todo") || formattedLine.startsWith("todo ")) {
+            String description = line.trim().substring("todo".length()).trim();
+            tasks[taskCount++] = new Todo(description);
+        } else if (formattedLine.startsWith("deadline")) {
+            tasks[taskCount++] = new Deadline(line);
+        } else if (formattedLine.startsWith("event")) {
+            tasks[taskCount++] = new Event(line);
+        } else {
+            Output.println("Incorrect task type!");
+            return false;
         }
 
         return true;
