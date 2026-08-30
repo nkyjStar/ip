@@ -1,3 +1,4 @@
+import java.util.Locale;
 import java.util.Scanner;
 
 /** Runs the Athena command-line task manager. */
@@ -73,13 +74,15 @@ public class Athena {
 
     /** Interprets a command and invokes the corresponding task-manager operation. */
     private void handleCommand(String line) {
+        String lowerCaseLine = line.toLowerCase(Locale.ROOT);
+
         if (line.equalsIgnoreCase("list")) {
             // Print list
             output.printList();
-        } else if (line.toLowerCase().startsWith("mark ")) {
+        } else if (lowerCaseLine.startsWith("mark ")) {
             // Mark task
             changeTaskStatus(line, true);
-        } else if (line.toLowerCase().startsWith("unmark ")) {
+        } else if (lowerCaseLine.startsWith("unmark ")) {
             // Unmark task
             changeTaskStatus(line, false);
         } else if (taskCount >= tasks.length) {
