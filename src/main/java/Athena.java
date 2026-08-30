@@ -100,8 +100,14 @@ public class Athena {
                 Output.println(exception.getMessage());
                 return false;
             }
-        } else if (formattedLine.startsWith("event")) {
-            tasks[taskCount++] = new Event(line);
+        } else if (formattedLine.equals("event") || formattedLine.startsWith("event ")) {
+            try {
+                Task event = new Event(line);
+                tasks[taskCount++] = event;
+            } catch (IllegalArgumentException exception) {
+                Output.println(exception.getMessage());
+                return false;
+            }
         } else {
             Output.println("Incorrect task type!");
             return false;
