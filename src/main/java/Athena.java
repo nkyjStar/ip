@@ -156,7 +156,7 @@ public class Athena {
         Scanner in = new Scanner(System.in);
 
         // Keep querying input till "bye"
-        while (athena.parseInput(in)) {
+        while (in.hasNextLine() && athena.parseInput(in)) {
             // Continue querying input
         }
 
