@@ -9,13 +9,13 @@ public class Athena {
             + "/_/   \\_\\\\__|_| |_|\\___|_| |_|\\__,_|\n";
     private static final String PAGE_BREAK = "____________________________________________________________";
     private static final int MAX_TASKS = 100;
-    private static final Task[] tasks = new Task[MAX_TASKS];
-    private static int taskCount = 0;
+    private final Task[] tasks = new Task[MAX_TASKS];
+    private int taskCount = 0;
 
     /** Formats and prints Athena's messages. */
-    private static class Output {
+    private class Output {
         // Send greeting message
-        private static void greeting() {
+        private void greeting() {
             System.out.println(PAGE_BREAK);
             System.out.println(BANNER);
             System.out.println("I have answered your summons. The name is Athena.");
@@ -24,20 +24,20 @@ public class Athena {
         }
 
         // Send farewell message
-        private static void farewell() {
+        private void farewell() {
             System.out.println("  I shall take my leave.");
             System.out.println(PAGE_BREAK);
         }
 
         // Output message
-        private static void println(String message) {
+        private void println(String message) {
             System.out.print("  ");
             System.out.println(message);
             System.out.println(PAGE_BREAK);
         }
 
         // Print list
-        private static void printList() {
+        private void printList() {
             System.out.println("  Here are the tasks in your list:");
             for (int i = 0; i < taskCount; i++) {
                 System.out.printf("  %d.%s%n", i + 1, tasks[i]);
@@ -46,8 +46,10 @@ public class Athena {
         }
     }
 
+    private final Output output = new Output();
+
     // Get input from user using Scanner
-    private static String getInput(Scanner in) {
+    private String getInput(Scanner in) {
         // Echo user input
         System.out.println();
         String line = in.nextLine();
@@ -57,7 +59,7 @@ public class Athena {
     }
 
     // Echoes user input
-    private static boolean parseInput(Scanner in) {
+    private boolean parseInput(Scanner in) {
         String line = getInput(in);
 
         // Check if user typed bye
@@ -68,7 +70,7 @@ public class Athena {
         // Parse input and invoke respective function
         if (line.equalsIgnoreCase("list")) {
             // Print list
-            Output.printList();
+            output.printList();
         } else if (line.toLowerCase().startsWith("mark ")) {
             // Mark task
             changeTaskStatus(line, true);
@@ -76,10 +78,10 @@ public class Athena {
             // Unmark task
             changeTaskStatus(line, false);
         } else if (taskCount >= tasks.length) {
-            Output.println("There is insufficient space in your list!");
+            output.println("There is insufficient space in your list!");
         } else {
             if (addTask(line))
-                Output.println(
+                output.println(
                         "Noted. I have added this task:\n    " + tasks[taskCount - 1] + "\n  Now you have " + taskCount
                                 + " tasks in the list");
         }
@@ -87,7 +89,7 @@ public class Athena {
         return true;
     }
 
-    private static boolean addTask(String line) {
+    private boolean addTask(String line) {
         String formattedLine = line.trim().toLowerCase();
 
         if (formattedLine.equals("todo") || formattedLine.startsWith("todo ")) {
@@ -98,7 +100,7 @@ public class Athena {
                 Task deadline = new Deadline(line);
                 tasks[taskCount++] = deadline;
             } catch (IllegalArgumentException exception) {
-                Output.println(exception.getMessage());
+            output.println(exception.getMessage());
                 return false;
             }
         } else if (formattedLine.equals("event") || formattedLine.startsWith("event ")) {
@@ -106,11 +108,11 @@ public class Athena {
                 Task event = new Event(line);
                 tasks[taskCount++] = event;
             } catch (IllegalArgumentException exception) {
-                Output.println(exception.getMessage());
+                output.println(exception.getMessage());
                 return false;
             }
         } else {
-            Output.println("Incorrect task type!");
+            output.println("Incorrect task type!");
             return false;
         }
 
@@ -118,13 +120,13 @@ public class Athena {
     }
 
     // Changes the completion status of the task identified by its one-based number.
-    private static void changeTaskStatus(String line, boolean done) {
+    private void changeTaskStatus(String line, boolean done) {
         String command = done ? "mark" : "unmark";
         String numberText = line.substring(command.length()).trim();
         try {
             int taskNumber = Integer.parseInt(numberText);
             if (taskNumber < 1 || taskNumber > taskCount) {
-                Output.println("Task number must be between 1 and " + taskCount + ".");
+                output.println("Task number must be between 1 and " + taskCount + ".");
                 return;
             }
 
@@ -132,29 +134,30 @@ public class Athena {
             Task task = tasks[taskIndex];
             if (done) {
                 task.markAsDone();
-                Output.println("Nice! I've marked this task as done:\n  " + task);
+                output.println("Nice! I've marked this task as done:\n  " + task);
             } else {
                 task.markAsNotDone();
-                Output.println("OK, I've marked this task as not done yet:\n  " + task);
+                output.println("OK, I've marked this task as not done yet:\n  " + task);
             }
         } catch (NumberFormatException exception) {
-            Output.println("Please provide a valid task number after " + command + ".");
+            output.println("Please provide a valid task number after " + command + ".");
         }
     }
 
     /** Starts Athena and processes commands until the user says goodbye. */
     public static void main(String[] args) {
-        Output.greeting();
+        Athena athena = new Athena();
+        athena.output.greeting();
 
         // Create input scanner
         Scanner in = new Scanner(System.in);
 
         // Keep querying input till "bye"
-        while (parseInput(in)) {
+        while (athena.parseInput(in)) {
             // Continue querying input
         }
 
-        Output.farewell();
+        athena.output.farewell();
         in.close();
     }
 }
