@@ -85,10 +85,11 @@ public class Athena {
         } else if (taskCount >= tasks.length) {
             output.println("There is insufficient space in your list!");
         } else {
-            if (addTask(line))
+            if (addTask(line)) {
                 output.println(
                         "Noted. I have added this task:\n    " + tasks[taskCount - 1] + "\n  Now you have " + taskCount
                                 + " tasks in the list");
+            }
         }
     }
 
