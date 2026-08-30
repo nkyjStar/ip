@@ -1,0 +1,4 @@
+interface:
+  display_name: "Test UI"
+  short_description: "Run Athena UI tests from the test plan"
+  default_prompt: "Use $test-ui to run the command-line UI test plan and report the complete console session."
