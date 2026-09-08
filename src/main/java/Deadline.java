@@ -27,6 +27,12 @@ public class Deadline extends Task {
 
         argList[0] = argList[0].trim();
         argList[1] = argList[1].trim().substring("by".length()).trim();
+        if (argList[0].isEmpty()) {
+            throw new IllegalArgumentException("The description of a deadline cannot be empty.");
+        }
+        if (argList[1].isEmpty()) {
+            throw new IllegalArgumentException("The date of a deadline cannot be empty.");
+        }
         return argList;
     }
 

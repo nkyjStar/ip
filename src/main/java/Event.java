@@ -31,6 +31,12 @@ public class Event extends Task {
         argList[0] = argList[0].trim();
         argList[1] = argList[1].trim().substring("from".length()).trim();
         argList[2] = argList[2].trim().substring("to".length()).trim();
+        if (argList[0].isEmpty()) {
+            throw new IllegalArgumentException("The description of an event cannot be empty.");
+        }
+        if (argList[1].isEmpty() || argList[2].isEmpty()) {
+            throw new IllegalArgumentException("An event must have both a start and an end time.");
+        }
         return argList;
     }
 
