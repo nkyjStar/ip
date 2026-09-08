@@ -8,7 +8,9 @@ public class Athena {
 
     private final Output output = new Output();
 
-    /** Interprets a command and invokes the corresponding task-manager operation. */
+    /**
+     * Interprets a command and invokes the corresponding task-manager operation.
+     */
     private void handleCommand(String line) {
         String lowerCaseLine = line.toLowerCase(Locale.ROOT);
 
@@ -19,7 +21,8 @@ public class Athena {
         } else if (lowerCaseLine.startsWith("unmark ")) {
             Task.changeTaskStatus(tasks, taskCount, line, false, output);
         } else if (taskCount >= tasks.length) {
-            output.println("There is insufficient space in your list!");
+            output.println(
+                    "Perhaps one should first fulfill their responsibilities before adding more beyond their current limit.");
         } else if (addTask(line)) {
             output.println(
                     "Noted. I have added this task:\n    " + tasks[taskCount - 1] + "\n  Now you have " + taskCount
@@ -41,7 +44,8 @@ public class Athena {
                 Task event = new Event(line);
                 tasks[taskCount++] = event;
             } else {
-                output.println("I'm sorry, but I don't know what that means :-(");
+                output.println(
+                        "Such insolence! It is rare for one to witness humans spout such nonsense in the presence of the goddess of wisdom.");
                 return false;
             }
         } catch (IllegalArgumentException exception) {
