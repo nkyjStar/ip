@@ -1,3 +1,7 @@
+package athena.io;
+
+import athena.task.Task;
+
 /** Formats and prints Athena's messages. */
 public class Output {
     private static final String BANNER = "    _    _   _                    \n"

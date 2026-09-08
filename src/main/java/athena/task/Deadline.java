@@ -1,8 +1,13 @@
+package athena.task;
+
 /** Represents a task that must be completed by a specified date or time. */
 public class Deadline extends Task {
     private final String deadline;
 
-    /** Creates a deadline from a command in the form {@code deadline description /by date}. */
+    /**
+     * Creates a deadline from a command in the form
+     * {@code deadline description /by date}.
+     */
     public Deadline(String args) {
         String[] argList = parseArgs(args);
         super(argList[0]);
@@ -14,7 +19,8 @@ public class Deadline extends Task {
      *
      * @param args the complete deadline command
      * @return an array containing the description and deadline
-     * @throws IllegalArgumentException if the command does not contain a valid {@code /by} delimiter
+     * @throws IllegalArgumentException if the command does not contain a valid
+     *                                  {@code /by} delimiter
      */
     private static String[] parseArgs(String args) {
         String command = args.trim();

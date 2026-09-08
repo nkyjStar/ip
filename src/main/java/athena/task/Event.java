@@ -1,9 +1,16 @@
-/** Represents a task that occurs between a specified start and end date or time. */
+package athena.task;
+
+/**
+ * Represents a task that occurs between a specified start and end date or time.
+ */
 public class Event extends Task {
     private final String start;
     private final String end;
 
-    /** Creates an event from a command in the form {@code event description /from start /to end}. */
+    /**
+     * Creates an event from a command in the form
+     * {@code event description /from start /to end}.
+     */
     public Event(String args) {
         String[] argList = parseArgs(args);
         super(argList[0]);
@@ -16,7 +23,8 @@ public class Event extends Task {
      *
      * @param args the complete event command
      * @return an array containing the description, start, and end
-     * @throws IllegalArgumentException if the command does not contain valid {@code /from} and {@code /to} parts
+     * @throws IllegalArgumentException if the command does not contain valid
+     *                                  {@code /from} and {@code /to} parts
      */
     private static String[] parseArgs(String args) {
         String command = args.trim();
