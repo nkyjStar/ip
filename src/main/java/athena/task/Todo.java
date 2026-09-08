@@ -1,3 +1,5 @@
+package athena.task;
+
 /** Represents a task with no associated date or time. */
 public class Todo extends Task {
     /** Creates a Todo with the given description. */

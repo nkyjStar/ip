@@ -1,3 +1,5 @@
+package athena.io;
+
 import java.util.Scanner;
 import java.util.function.Consumer;
 
@@ -20,7 +22,9 @@ public class Input {
         return scanner.nextLine();
     }
 
-    /** Reads and processes one command, returning false when the user says goodbye. */
+    /**
+     * Reads and processes one command, returning false when the user says goodbye.
+     */
     public boolean parseInput(Output output, Consumer<String> commandHandler) {
         output.prepareForInput();
         String line = nextLine();

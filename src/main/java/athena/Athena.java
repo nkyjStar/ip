@@ -1,4 +1,13 @@
+package athena;
+
 import java.util.Locale;
+
+import athena.io.Input;
+import athena.io.Output;
+import athena.task.Deadline;
+import athena.task.Event;
+import athena.task.Task;
+import athena.task.Todo;
 
 /** Runs the Athena command-line task manager. */
 public class Athena {
