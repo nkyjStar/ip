@@ -15,18 +15,31 @@ public class Athena {
      * Interprets a command and invokes the corresponding task-manager operation.
      */
     private void handleCommand(String line) {
-        String lowerCaseLine = line.toLowerCase(Locale.ROOT);
-
-        if (line.equalsIgnoreCase("list")) {
-            taskManager.listTasks();
-        } else if (lowerCaseLine.startsWith("mark ")) {
-            taskManager.changeTaskStatus(line, true);
-        } else if (lowerCaseLine.startsWith("unmark ")) {
-            taskManager.changeTaskStatus(line, false);
-        } else if (lowerCaseLine.equals("delete") || lowerCaseLine.startsWith("delete ")) {
-            taskManager.deleteTask(line);
-        } else {
-            taskManager.addTask(line);
+        String[] parts = line.trim().split("\\s+", 2);
+        String command = parts[0].toLowerCase(Locale.ROOT);
+        String argument = parts.length == 2 ? parts[1] : "";
+        switch (command) {
+            case "list":
+                if (!argument.isEmpty()) {
+                    output.println("The list command does not accept arguments.");
+                } else {
+                    taskManager.listTasks();
+                }
+                break;
+            case "mark":
+            case "unmark":
+                taskManager.changeTaskStatus(command + " " + argument, command.equals("mark"));
+                break;
+            case "delete":
+                taskManager.deleteTask(command + " " + argument);
+                break;
+            case "todo":
+            case "deadline":
+            case "event":
+                taskManager.addTask(command + " " + argument);
+                break;
+            default:
+                output.println("Unknown command. Use todo, deadline, event, list, mark, unmark, delete, or bye.");
         }
     }
 
@@ -34,6 +47,10 @@ public class Athena {
     public static void main(String[] args) {
         Athena athena = new Athena();
         athena.output.greeting();
+        if (!athena.taskManager.loadTasks()) {
+            athena.output.farewell();
+            return;
+        }
 
         // Create input scanner
         Input input = new Input();

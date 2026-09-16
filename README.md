@@ -2,6 +2,33 @@
 
 This is a project template for a greenfield Java project named _Athena_. Given below are instructions on how to use it.
 
+Tasks are loaded from `data/athena.txt` at startup and saved after successful add,
+mark, unmark, and delete changes. The path is relative to the working directory and built
+with `Path.of("data", "athena.txt")` so Java uses the operating system's path
+separator. Run from the project root. Missing or empty files start an empty list;
+the first successful task addition creates the data directory and file if needed.
+UTF-8 BOMs and blank lines are accepted. Invalid records, invalid
+UTF-8, unreadable files, and more than 100 tasks stop startup without changing the
+file; errors identify the offending line when possible. Files are limited to 1 MiB.
+
+New saves use a version header `ATHENA\t1`, followed by tab-separated task type,
+completion flag (`0` or `1`), description, and any date fields. Backslashes, tabs,
+newlines, and carriage returns are escaped as `\\`, `\t`, `\n`, and `\r`.
+The older display-format files still load and migrate on the next successful
+change. That older format cannot distinguish date fields containing its own
+` (from: `, ` to: `, or ` (by: ` delimiters; check such legacy entries manually.
+
+Saving writes and flushes a temporary file in the same directory, then atomically
+replaces the original. If this fails (including unsupported atomic replacement),
+the original file is preserved and the task change is reverted. Detected external
+file edits are preserved and require restarting before further changes. The save
+file and its data directory must not be symbolic links. These checks do not lock
+out unrelated programs editing the file concurrently; use one Athena session at
+a time. Storage failures such as permission denial or a full disk are reported.
+
+Run `python test/run-ui-tests.py` with Java 25 for isolated UI, restart, and
+storage-failure tests. No real task data is used by the tests.
+
 ## Setting up in Intellij
 
 Prerequisites: JDK 25, update Intellij to the most recent version.

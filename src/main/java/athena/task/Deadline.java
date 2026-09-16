@@ -4,6 +4,19 @@ package athena.task;
 public class Deadline extends Task {
     private final String deadline;
 
+    /** Creates a deadline from separately stored fields, without interpreting command delimiters. */
+    public Deadline(String description, String deadline) {
+        super(description);
+        if (deadline == null || deadline.isBlank()) {
+            throw new IllegalArgumentException("The date of a deadline cannot be empty.");
+        }
+        this.deadline = deadline;
+    }
+
+    public String getDeadline() {
+        return deadline;
+    }
+
     /**
      * Creates a deadline from a command in the form
      * {@code deadline description /by date}.
@@ -25,14 +38,14 @@ public class Deadline extends Task {
     private static String[] parseArgs(String args) {
         String command = args.trim();
         String descriptionAndDeadline = command.substring("deadline".length()).trim();
-        String[] argList = descriptionAndDeadline.split("/", 2);
+        String[] argList = descriptionAndDeadline.split("(?i)\\s+/by(?:\\s+|$)", 2);
 
-        if (argList.length < 2 || !argList[1].trim().toLowerCase().startsWith("by ")) {
+        if (argList.length < 2) {
             throw new IllegalArgumentException("A deadline must use the format: deadline description /by date.");
         }
 
         argList[0] = argList[0].trim();
-        argList[1] = argList[1].trim().substring("by".length()).trim();
+        argList[1] = argList[1].trim();
         if (argList[0].isEmpty()) {
             throw new IllegalArgumentException("The description of a deadline cannot be empty.");
         }

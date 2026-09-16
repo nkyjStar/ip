@@ -7,6 +7,24 @@ public class Event extends Task {
     private final String start;
     private final String end;
 
+    /** Creates an event from separately stored fields, without interpreting command delimiters. */
+    public Event(String description, String start, String end) {
+        super(description);
+        if (start == null || start.isBlank() || end == null || end.isBlank()) {
+            throw new IllegalArgumentException("An event must have both a start and an end time.");
+        }
+        this.start = start;
+        this.end = end;
+    }
+
+    public String getStart() {
+        return start;
+    }
+
+    public String getEnd() {
+        return end;
+    }
+
     /**
      * Creates an event from a command in the form
      * {@code event description /from start /to end}.
@@ -29,16 +47,15 @@ public class Event extends Task {
     private static String[] parseArgs(String args) {
         String command = args.trim();
         String descriptionAndTimes = command.substring("event".length()).trim();
-        String[] argList = descriptionAndTimes.split("/", 3);
-
-        if (argList.length < 3 || !argList[1].trim().toLowerCase().startsWith("from ")
-                || !argList[2].trim().toLowerCase().startsWith("to ")) {
+        String[] descriptionAndRange = descriptionAndTimes.split("(?i)\\s+/from(?:\\s+|$)", 2);
+        if (descriptionAndRange.length < 2) {
             throw new IllegalArgumentException("An event must use the format: event description /from start /to end.");
         }
-
-        argList[0] = argList[0].trim();
-        argList[1] = argList[1].trim().substring("from".length()).trim();
-        argList[2] = argList[2].trim().substring("to".length()).trim();
+        String[] range = descriptionAndRange[1].split("(?i)\\s+/to(?:\\s+|$)", 2);
+        if (range.length < 2) {
+            throw new IllegalArgumentException("An event must use the format: event description /from start /to end.");
+        }
+        String[] argList = {descriptionAndRange[0].trim(), range[0].trim(), range[1].trim()};
         if (argList[0].isEmpty()) {
             throw new IllegalArgumentException("The description of an event cannot be empty.");
         }
