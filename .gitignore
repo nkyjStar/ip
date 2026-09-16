@@ -24,3 +24,6 @@ text-ui-test/EXPECTED-UNIX.TXT
 
 # Java Class files
 *.class
+
+# Local task data
+/data/

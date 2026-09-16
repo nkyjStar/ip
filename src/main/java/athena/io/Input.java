@@ -27,7 +27,7 @@ public class Input {
      */
     public boolean parseInput(Output output, Consumer<String> commandHandler) {
         output.prepareForInput();
-        String line = nextLine();
+        String line = nextLine().trim();
         output.finishInput();
 
         if (line.equalsIgnoreCase("bye")) {
