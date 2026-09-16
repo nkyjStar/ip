@@ -23,6 +23,33 @@ folders. Runtime faults are injected after a `list` response, ensuring startup
 has completed. Compare expected fragments in order, reject forbidden fragments,
 and require the fixture bytes (or directory) to remain unchanged.
 
+### Packaged JAR smoke test
+
+After building with `shadowJar`, run `java -jar` with the generated
+`build/libs/athena.jar` in a fresh temporary working directory, using Java 25.
+Aim: Verify the executable manifest, packaged classes, first-run saving, and
+loading after restart independently of compiled classes in the project.
+
+First session input: `todo packaged task`, `list`, `bye` (one command per line).
+Expected response fragments, in order:
+
+```text
+  Noted. I have added this task:
+    [T][ ] packaged task
+  Now you have 1 tasks in the list
+  Here are the tasks in your list:
+  1.[T][ ] packaged task
+```
+
+After exit, require `data/athena.txt` to contain exactly
+`ATHENA\t1\nT\t0\tpackaged task\n` (normalizing CRLF to LF).
+Restart the same JAR in the same directory with `list`, `bye`. Require the
+complete empty-or-numbered-list response to contain exactly this single task,
+and require the saved bytes to remain unchanged. Both sessions must exit with
+code zero without stderr. Print and retain the complete input/output record.
+Inspect the archive's manifest for `Main-Class: athena.Athena` and verify all
+application classes are included; local task data must not be packaged.
+
 Storage error scenarios (JSON fixtures):
 
 ```errors

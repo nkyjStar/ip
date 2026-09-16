@@ -29,6 +29,46 @@ a time. Storage failures such as permission denial or a full disk are reported.
 Run `python test/run-ui-tests.py` with Java 25 for isolated UI, restart, and
 storage-failure tests. No real task data is used by the tests.
 
+## Building and running the fat JAR
+
+Install JDK 25 and check that `java -version` and `javac -version` show version 25.
+If `JAVA_HOME` is set, it must point to that JDK. Run the commands below from the
+project root. The included Gradle wrapper downloads Gradle 9.1.0 automatically;
+the first build needs internet access to download Gradle and the Shadow plugin.
+
+On Windows (PowerShell):
+
+```powershell
+.\gradlew.bat clean shadowJar
+java -jar build/libs/athena.jar
+```
+
+On macOS or Linux:
+
+```sh
+sh ./gradlew clean shadowJar
+java -jar build/libs/athena.jar
+```
+
+The generated fat JAR is **`build/libs/athena.jar`**. `clean` removes previous
+build outputs, and `shadowJar` compiles and packages the application with its
+runtime dependencies. The project currently has no external runtime dependencies.
+The JAR does not include Java itself; use Java 25 to run it. Enter `bye` to exit.
+
+`build.gradle` applies the `application` and `com.gradleup.shadow` plugins,
+selects the Java 25 toolchain, and sets `athena.Athena` as the main class. Shadow
+uses this entry point to make the JAR executable with `java -jar`. It also sets
+the output filename to `athena.jar`. `settings.gradle` names the project `athena`.
+The wrapper files pin the Gradle version and verify the downloaded distribution's
+SHA-256 checksum. See the [Shadow application-plugin documentation](https://gradleup.com/shadow/application-plugin/)
+and [Gradle Java compatibility table](https://docs.gradle.org/current/userguide/compatibility.html).
+
+Task data stays outside the JAR in `data/athena.txt`, relative to the directory
+from which you run Java. Running from the project root therefore uses the same
+data as running from source. You can copy the JAR to another folder, but copy the
+`data` folder too if you want to keep your saved tasks there. If no save file
+exists, Athena starts with an empty list and creates it on the first addition.
+
 ## Setting up in Intellij
 
 Prerequisites: JDK 25, update Intellij to the most recent version.
@@ -40,7 +80,7 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    1. If there are any further prompts, accept the defaults.
 1. Configure the project to use **JDK 25** (not other versions) as explained in [here](https://www.jetbrains.com/help/idea/sdk.html#set-up-jdk).<br>
    In the same dialog, set the **Project language level** field to the `SDK default` option.
-1. After that, locate the `src/main/java/Athena.java` file, right-click it, and choose `Run Athena.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, you should see the following output:
+1. After that, locate the `src/main/java/athena/Athena.java` file, right-click it, and choose `Run Athena.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, you should see the following output:
 
    ```
        _    _   _
