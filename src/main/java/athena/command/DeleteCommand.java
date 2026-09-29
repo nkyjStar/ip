@@ -1,5 +1,6 @@
 package athena.command;
 
+import athena.io.Output;
 import athena.task.TaskManager;
 
 /** Deletes the task selected by the user's command. */
@@ -12,7 +13,7 @@ public class DeleteCommand extends Command {
     }
 
     @Override
-    public void execute(TaskManager taskManager) {
+    public void execute(TaskManager taskManager, Output output) {
         taskManager.deleteTask(fullCommand);
     }
 }

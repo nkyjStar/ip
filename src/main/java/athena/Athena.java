@@ -1,5 +1,6 @@
 package athena;
 
+import athena.command.Command;
 import athena.io.Input;
 import athena.io.Output;
 import athena.task.TaskManager;
@@ -8,7 +9,12 @@ import athena.task.TaskManager;
 public class Athena {
     private final Output output = new Output();
     private final TaskManager taskManager = new TaskManager(output);
-    private final Parser parser = new Parser(output, taskManager);
+
+    /** Parses and executes one user command. */
+    private void executeCommand(String line) {
+        Command command = Parser.parse(line);
+        command.execute(taskManager, output);
+    }
 
     /** Starts Athena and processes commands until the user says goodbye. */
     public static void main(String[] args) {
@@ -23,7 +29,7 @@ public class Athena {
         Input input = new Input();
 
         // Keep querying input till "bye"
-        while (input.hasNextLine() && input.parseInput(athena.output, athena.parser::parse)) {
+        while (input.hasNextLine() && input.parseInput(athena.output, athena::executeCommand)) {
             // Continue querying input
         }
 

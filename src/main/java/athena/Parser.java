@@ -4,52 +4,44 @@ import java.util.Locale;
 
 import athena.command.AddCommand;
 import athena.command.DeleteCommand;
+import athena.command.Command;
+import athena.command.InvalidCommand;
 import athena.command.ListCommand;
 import athena.command.MarkCommand;
 import athena.command.UnmarkCommand;
-import athena.io.Output;
-import athena.task.TaskManager;
 
-/** Interprets user commands and dispatches them to the task manager. */
-public class Parser {
-    private final Output output;
-    private final TaskManager taskManager;
+/** Interprets user input and creates the corresponding command. */
+public final class Parser {
+    private static final String UNKNOWN_COMMAND_MESSAGE =
+            "Unknown command. Use todo, deadline, event, list, mark, unmark, delete, or bye.";
 
-    /** Creates a parser that reports through the given output and operates on the given task manager. */
-    public Parser(Output output, TaskManager taskManager) {
-        this.output = output;
-        this.taskManager = taskManager;
+    private Parser() {
+        // Prevent instantiation because this class only provides parsing behavior.
     }
 
-    /** Interprets one command and invokes the corresponding task-manager operation. */
-    public void parse(String line) {
+    /** Returns the command represented by the given user input. */
+    public static Command parse(String line) {
         String[] parts = line.trim().split("\\s+", 2);
         String command = parts[0].toLowerCase(Locale.ROOT);
         String argument = parts.length == 2 ? parts[1] : "";
         switch (command) {
-            case "list":
-                if (!argument.isEmpty()) {
-                    output.println("The list command does not accept arguments.");
-                } else {
-                    new ListCommand().execute(taskManager);
-                }
-                break;
-            case "mark":
-                new MarkCommand(command + " " + argument).execute(taskManager);
-                break;
-            case "unmark":
-                new UnmarkCommand(command + " " + argument).execute(taskManager);
-                break;
-            case "delete":
-                new DeleteCommand(command + " " + argument).execute(taskManager);
-                break;
-            case "todo":
-            case "deadline":
-            case "event":
-                new AddCommand(command + " " + argument).execute(taskManager);
-                break;
-            default:
-                output.println("Unknown command. Use todo, deadline, event, list, mark, unmark, delete, or bye.");
+        case "list":
+            if (!argument.isEmpty()) {
+                return new InvalidCommand("The list command does not accept arguments.");
+            }
+            return new ListCommand();
+        case "mark":
+            return new MarkCommand(command + " " + argument);
+        case "unmark":
+            return new UnmarkCommand(command + " " + argument);
+        case "delete":
+            return new DeleteCommand(command + " " + argument);
+        case "todo":
+        case "deadline":
+        case "event":
+            return new AddCommand(command + " " + argument);
+        default:
+            return new InvalidCommand(UNKNOWN_COMMAND_MESSAGE);
         }
     }
 }
