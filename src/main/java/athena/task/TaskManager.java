@@ -2,18 +2,15 @@ package athena.task;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Locale;
 
 import athena.io.Output;
 import athena.io.Storage;
 
-/** Owns the task list and persists successful task operations with user feedback. */
+/** Coordinates task operations, persistence, and user feedback. */
 public class TaskManager {
-    private static final int MAX_TASKS = 100;
     private static final Path SAVE_PATH = Path.of("data", "athena.txt");
-    private final Task[] tasks = new Task[MAX_TASKS];
-    private int taskCount = 0;
+    private TaskList tasks = new TaskList();
     private final Output output;
     private final Storage storage = new Storage(SAVE_PATH);
 
@@ -24,19 +21,24 @@ public class TaskManager {
 
     /** Displays the tasks in their current list order. */
     public void listTasks() {
-        output.printList(tasks, taskCount);
+        output.printList(tasks);
     }
 
     /** Adds a validated task and reports success only after saving it. */
     public void addTask(String line) {
-        if (taskCount == MAX_TASKS) {
-            output.println("The list is full (" + MAX_TASKS + " tasks).");
-        } else if (createTask(line)) {
+        if (tasks.isFull()) {
+            output.println("The list is full (" + tasks.getCapacity() + " tasks).");
+        } else {
+            Task task = createTask(line);
+            if (task == null) {
+                return;
+            }
+            tasks.add(task);
             if (saveTasks()) {
-                output.println("Noted. I have added this task:\n    " + tasks[taskCount - 1]
-                        + "\n  Now you have " + taskCount + " tasks in the list");
+                output.println("Noted. I have added this task:\n    " + task
+                        + "\n  Now you have " + tasks.size() + " tasks in the list");
             } else {
-                tasks[--taskCount] = null;
+                tasks.remove(tasks.size() - 1);
             }
         }
     }
@@ -52,15 +54,15 @@ public class TaskManager {
             output.println("Please provide a valid task number after " + command + ".");
             return;
         }
-        if (taskCount == 0) {
+        if (tasks.isEmpty()) {
             output.println("There are no tasks in the list.");
             return;
         }
-        if (number < 1 || number > taskCount) {
-            output.println("Task number must be between 1 and " + taskCount + ".");
+        if (number < 1 || number > tasks.size()) {
+            output.println("Task number must be between 1 and " + tasks.size() + ".");
             return;
         }
-        Task task = tasks[number - 1];
+        Task task = tasks.get(number - 1);
         boolean wasDone = task.isDone();
         if (isDone) {
             task.markAsDone();
@@ -82,10 +84,7 @@ public class TaskManager {
     /** Validates the entire saved list before installing it into the running application. */
     public boolean loadTasks() {
         try {
-            List<Task> loaded = storage.load(MAX_TASKS);
-            for (Task task : loaded) {
-                tasks[taskCount++] = task;
-            }
+            tasks = new TaskList(storage.load(tasks.getCapacity()));
             return true;
         } catch (IOException | SecurityException exception) {
             output.println("Could not load tasks: " + exception.getMessage());
@@ -96,7 +95,7 @@ public class TaskManager {
     /** Reports save failures so the caller can revert the pending change. */
     private boolean saveTasks() {
         try {
-            storage.save(tasks, taskCount);
+            storage.save(tasks);
             return true;
         } catch (IOException | SecurityException exception) {
             output.println("Could not save tasks. Change was not applied: " + exception.getMessage());
@@ -105,31 +104,26 @@ public class TaskManager {
     }
 
     /** Creates a task only after its input fields have been validated. */
-    private boolean createTask(String line) {
+    private Task createTask(String line) {
         String formattedLine = line.trim().toLowerCase(Locale.ROOT);
 
         try {
             if (formattedLine.equals("todo") || formattedLine.startsWith("todo ")) {
                 String description = line.trim().substring("todo".length()).trim();
-                Task todo = new Todo(description);
-                tasks[taskCount++] = todo;
+                return new Todo(description);
             } else if (formattedLine.equals("deadline") || formattedLine.startsWith("deadline ")) {
-                Task deadline = new Deadline(line);
-                tasks[taskCount++] = deadline;
+                return new Deadline(line);
             } else if (formattedLine.equals("event") || formattedLine.startsWith("event ")) {
-                Task event = new Event(line);
-                tasks[taskCount++] = event;
+                return new Event(line);
             } else {
                 output.println("Such insolence! It is rare for one to witness humans spout such nonsense "
                         + "in the presence of the goddess of wisdom.");
-                return false;
+                return null;
             }
         } catch (IllegalArgumentException exception) {
             output.println(exception.getMessage());
-            return false;
+            return null;
         }
-
-        return true;
     }
 
     /** Removes the selected task and closes the gap so list numbers remain consecutive. */
@@ -143,32 +137,24 @@ public class TaskManager {
             return;
         }
 
-        if (taskCount == 0) {
+        if (tasks.isEmpty()) {
             output.println("There are no tasks to delete.");
             return;
         }
-        if (taskNumber < 1 || taskNumber > taskCount) {
-            output.println("Task number must be between 1 and " + taskCount + ".");
+        if (taskNumber < 1 || taskNumber > tasks.size()) {
+            output.println("Task number must be between 1 and " + tasks.size() + ".");
             return;
         }
 
-        Task removedTask = tasks[taskNumber - 1];
-        for (int i = taskNumber - 1; i < taskCount - 1; i++) {
-            tasks[i] = tasks[i + 1];
-        }
-        taskCount--;
-        tasks[taskCount] = null;
+        int taskIndex = taskNumber - 1;
+        Task removedTask = tasks.remove(taskIndex);
 
         if (!saveTasks()) {
-            for (int i = taskCount; i >= taskNumber; i--) {
-                tasks[i] = tasks[i - 1];
-            }
-            tasks[taskNumber - 1] = removedTask;
-            taskCount++;
+            tasks.add(taskIndex, removedTask);
             return;
         }
 
         output.println("Noted. I've removed this task:\n    " + removedTask
-                + "\n  Now you have " + taskCount + " tasks in the list.");
+                + "\n  Now you have " + tasks.size() + " tasks in the list.");
     }
 }

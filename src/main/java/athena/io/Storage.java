@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import athena.task.Deadline;
 import athena.task.Event;
 import athena.task.Task;
+import athena.task.TaskList;
 import athena.task.Todo;
 
 /** Validates task files and replaces them atomically so failed saves preserve existing data. */
@@ -173,10 +174,10 @@ public class Storage {
     }
 
     /** Writes a complete temporary file, then atomically replaces the unchanged original. */
-    public void save(Task[] tasks, int count) throws IOException {
+    public void save(TaskList tasks) throws IOException {
         StringBuilder text = new StringBuilder(HEADER).append('\n');
-        for (int i = 0; i < count; i++) {
-            Task task = tasks[i];
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
             String type = task instanceof Deadline ? "D" : task instanceof Event ? "E" : "T";
             text.append(type).append('\t').append(task.isDone() ? "1" : "0").append('\t');
             text.append(escape(task.getDescription()));

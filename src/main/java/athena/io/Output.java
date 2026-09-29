@@ -1,6 +1,6 @@
 package athena.io;
 
-import athena.task.Task;
+import athena.task.TaskList;
 
 /** Formats and prints Athena's messages. */
 public class Output {
@@ -44,10 +44,10 @@ public class Output {
     }
 
     /** Prints all tasks in the supplied task list. */
-    public void printList(Task[] tasks, int taskCount) {
+    public void printList(TaskList tasks) {
         System.out.println("  Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.printf("  %d.%s%n", i + 1, tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.printf("  %d.%s%n", i + 1, tasks.get(i));
         }
         System.out.println(PAGE_BREAK);
     }
