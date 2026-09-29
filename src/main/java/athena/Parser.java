@@ -2,6 +2,7 @@ package athena;
 
 import java.util.Locale;
 
+import athena.command.AddCommand;
 import athena.command.ListCommand;
 import athena.io.Output;
 import athena.task.TaskManager;
@@ -40,7 +41,7 @@ public class Parser {
             case "todo":
             case "deadline":
             case "event":
-                taskManager.addTask(command + " " + argument);
+                new AddCommand(command + " " + argument).execute(taskManager);
                 break;
             default:
                 output.println("Unknown command. Use todo, deadline, event, list, mark, unmark, delete, or bye.");
