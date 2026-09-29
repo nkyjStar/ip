@@ -7,6 +7,7 @@ import athena.command.AddCommand;
 import athena.command.DeleteCommand;
 import athena.command.Command;
 import athena.command.ExitCommand;
+import athena.command.FindCommand;
 import athena.command.InvalidCommand;
 import athena.command.ListCommand;
 import athena.command.MarkCommand;
@@ -17,7 +18,7 @@ import athena.task.TaskDateTime;
 /** Interprets user input and creates the corresponding command. */
 public final class Parser {
     private static final String UNKNOWN_COMMAND_MESSAGE =
-            "Unknown command. Use todo, deadline, event, list, on, mark, unmark, delete, or bye.";
+            "Unknown command. Use todo, deadline, event, list, find, on, mark, unmark, delete, or bye.";
     private static final String INVALID_DATE_MESSAGE =
             "Please provide a valid date in d/M/yyyy or yyyy-MM-dd format after on.";
 
@@ -42,6 +43,11 @@ public final class Parser {
             return new UnmarkCommand(command + " " + argument);
         case "delete":
             return new DeleteCommand(command + " " + argument);
+        case "find":
+            if (argument.isEmpty()) {
+                return new InvalidCommand("Please provide a keyword after find.");
+            }
+            return new FindCommand(argument);
         case "on":
             try {
                 LocalDate date = TaskDateTime.parseDate(argument);

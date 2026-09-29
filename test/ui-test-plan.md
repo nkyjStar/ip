@@ -1016,3 +1016,63 @@ Expected file checkpoints (`data/athena.txt`):
   "ATHENA\t1\nT\t0\tunrelated\nD\t0\ttimed\t2026-06-07 0900\nD\t0\tdate only\t2026-06-07\nE\t0\tsame day\t2026-06-07 1000\t2026-06-07 1200\nE\t0\tspanning\t2026-06-06 2300\t2026-06-08 0100\nE\t0\toutside\t2026-06-08\t2026-06-09\n"
 ]
 ```
+
+## Test case 15: Find tasks by description keyword
+
+Aim: Verify that `find` searches every task type by description, ignores case,
+preserves task order and status, does not search date fields, handles no matches,
+rejects a missing keyword, and never changes the save file.
+
+Input:
+
+```text
+todo read book
+deadline return BOOK /by 2026-06-06
+event book club /from 2026-06-07 1400 /to 2026-06-07 1600
+todo write report
+mark 2
+find book
+find BOOK
+find 2026
+find missing
+find
+bye
+```
+
+Expected output:
+
+```text
+  Here are the matching tasks in your list:
+  1.[T][ ] read book
+  2.[D][X] return BOOK (by: Jun 06 2026)
+  3.[E][ ] book club (from: Jun 07 2026 2:00 PM to: Jun 07 2026 4:00 PM)
+
+  Here are the matching tasks in your list:
+  1.[T][ ] read book
+  2.[D][X] return BOOK (by: Jun 06 2026)
+  3.[E][ ] book club (from: Jun 07 2026 2:00 PM to: Jun 07 2026 4:00 PM)
+
+  There are no matching tasks.
+
+  There are no matching tasks.
+
+  Please provide a keyword after find.
+```
+
+Expected file checkpoints (`data/athena.txt`):
+
+```json
+[
+  "ATHENA\t1\nT\t0\tread book\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn BOOK\t2026-06-06\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn BOOK\t2026-06-06\nE\t0\tbook club\t2026-06-07 1400\t2026-06-07 1600\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn BOOK\t2026-06-06\nE\t0\tbook club\t2026-06-07 1400\t2026-06-07 1600\nT\t0\twrite report\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t1\treturn BOOK\t2026-06-06\nE\t0\tbook club\t2026-06-07 1400\t2026-06-07 1600\nT\t0\twrite report\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t1\treturn BOOK\t2026-06-06\nE\t0\tbook club\t2026-06-07 1400\t2026-06-07 1600\nT\t0\twrite report\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t1\treturn BOOK\t2026-06-06\nE\t0\tbook club\t2026-06-07 1400\t2026-06-07 1600\nT\t0\twrite report\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t1\treturn BOOK\t2026-06-06\nE\t0\tbook club\t2026-06-07 1400\t2026-06-07 1600\nT\t0\twrite report\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t1\treturn BOOK\t2026-06-06\nE\t0\tbook club\t2026-06-07 1400\t2026-06-07 1600\nT\t0\twrite report\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t1\treturn BOOK\t2026-06-06\nE\t0\tbook club\t2026-06-07 1400\t2026-06-07 1600\nT\t0\twrite report\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t1\treturn BOOK\t2026-06-06\nE\t0\tbook club\t2026-06-07 1400\t2026-06-07 1600\nT\t0\twrite report\n"
+]
+```

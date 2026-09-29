@@ -3,6 +3,7 @@ package athena.task;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /** Owns Athena's ordered, fixed-capacity collection of tasks. */
 public class TaskList {
@@ -82,6 +83,22 @@ public class TaskList {
         }
         tasks[--size] = null;
         return removedTask;
+    }
+
+    /** Returns tasks whose descriptions contain the keyword, ignoring case. */
+    public List<Task> findByDescription(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            throw new IllegalArgumentException("A search keyword cannot be empty.");
+        }
+        String normalizedKeyword = keyword.toLowerCase(Locale.ROOT);
+        List<Task> matches = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            String normalizedDescription = tasks[i].getDescription().toLowerCase(Locale.ROOT);
+            if (normalizedDescription.contains(normalizedKeyword)) {
+                matches.add(tasks[i]);
+            }
+        }
+        return matches;
     }
 
     /** Returns deadlines and events occurring on the given date in their current list order. */

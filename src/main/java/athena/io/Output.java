@@ -57,6 +57,20 @@ public class Output {
         System.out.println(PAGE_BREAK);
     }
 
+    /** Prints tasks matching a search keyword, or reports that none match. */
+    public void printMatchingTasks(List<Task> tasks) {
+        if (tasks.isEmpty()) {
+            println("There are no matching tasks.");
+            return;
+        }
+
+        System.out.println("  Here are the matching tasks in your list:");
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.printf("  %d.%s%n", i + 1, tasks.get(i));
+        }
+        System.out.println(PAGE_BREAK);
+    }
+
     /** Prints deadlines and events occurring on the date, or reports that none occur. */
     public void printTasksOn(LocalDate date, List<Task> tasks) {
         String formattedDate = TaskDateTime.formatDate(date);

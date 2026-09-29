@@ -25,6 +25,11 @@ public class TaskManager {
         output.printList(tasks);
     }
 
+    /** Displays tasks whose descriptions contain the given keyword. */
+    public void findTasks(String keyword) {
+        output.printMatchingTasks(tasks.findByDescription(keyword));
+    }
+
     /** Displays deadlines and events occurring on the specified date in list order. */
     public void listTasksOn(LocalDate date) {
         output.printTasksOn(date, tasks.findTasksOn(date));
