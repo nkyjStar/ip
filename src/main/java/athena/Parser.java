@@ -1,5 +1,8 @@
 package athena;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
 import athena.command.AddCommand;
@@ -9,12 +12,15 @@ import athena.command.ExitCommand;
 import athena.command.InvalidCommand;
 import athena.command.ListCommand;
 import athena.command.MarkCommand;
+import athena.command.OnDateCommand;
 import athena.command.UnmarkCommand;
 
 /** Interprets user input and creates the corresponding command. */
 public final class Parser {
     private static final String UNKNOWN_COMMAND_MESSAGE =
-            "Unknown command. Use todo, deadline, event, list, mark, unmark, delete, or bye.";
+            "Unknown command. Use todo, deadline, event, list, on, mark, unmark, delete, or bye.";
+    private static final String INVALID_DATE_MESSAGE =
+            "Please provide a valid date in yyyy-MM-dd format after on.";
 
     private Parser() {
         // Prevent instantiation because this class only provides parsing behavior.
@@ -37,6 +43,13 @@ public final class Parser {
             return new UnmarkCommand(command + " " + argument);
         case "delete":
             return new DeleteCommand(command + " " + argument);
+        case "on":
+            try {
+                LocalDate date = LocalDate.parse(argument, DateTimeFormatter.ISO_LOCAL_DATE);
+                return new OnDateCommand(date);
+            } catch (DateTimeParseException exception) {
+                return new InvalidCommand(INVALID_DATE_MESSAGE);
+            }
         case "bye":
             if (!argument.isEmpty()) {
                 return new InvalidCommand(UNKNOWN_COMMAND_MESSAGE);

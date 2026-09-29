@@ -30,6 +30,11 @@ public class Deadline extends Task {
         return deadline;
     }
 
+    /** Returns a deadline date in the user-facing display format. */
+    public static String formatDate(LocalDate date) {
+        return date.format(DISPLAY_FORMAT);
+    }
+
     /**
      * Creates a deadline from a command in the form
      * {@code deadline description /by date}.
@@ -82,6 +87,6 @@ public class Deadline extends Task {
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + deadline.format(DISPLAY_FORMAT) + ")";
+        return "[D]" + super.toString() + " (by: " + formatDate(deadline) + ")";
     }
 }

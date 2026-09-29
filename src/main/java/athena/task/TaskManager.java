@@ -2,6 +2,7 @@ package athena.task;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.Locale;
 
 import athena.io.Output;
@@ -22,6 +23,11 @@ public class TaskManager {
     /** Displays the tasks in their current list order. */
     public void listTasks() {
         output.printList(tasks);
+    }
+
+    /** Displays deadlines due on the specified date in their current list order. */
+    public void listDeadlinesOn(LocalDate date) {
+        output.printDeadlinesOn(date, tasks.findDeadlinesOn(date));
     }
 
     /** Adds a validated task and reports success only after saving it. */

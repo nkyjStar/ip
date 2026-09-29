@@ -1,5 +1,7 @@
 package athena.task;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /** Owns Athena's ordered, fixed-capacity collection of tasks. */
@@ -80,6 +82,17 @@ public class TaskList {
         }
         tasks[--size] = null;
         return removedTask;
+    }
+
+    /** Returns the deadlines due on the given date in their current list order. */
+    public List<Deadline> findDeadlinesOn(LocalDate date) {
+        List<Deadline> matches = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            if (tasks[i] instanceof Deadline deadline && deadline.getDeadline().equals(date)) {
+                matches.add(deadline);
+            }
+        }
+        return matches;
     }
 
     /** Ensures an index identifies a task currently in the list. */

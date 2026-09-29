@@ -1,5 +1,9 @@
 package athena.io;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import athena.task.Deadline;
 import athena.task.TaskList;
 
 /** Formats and prints Athena's messages. */
@@ -48,6 +52,21 @@ public class Output {
         System.out.println("  Here are the tasks in your list:");
         for (int i = 0; i < tasks.size(); i++) {
             System.out.printf("  %d.%s%n", i + 1, tasks.get(i));
+        }
+        System.out.println(PAGE_BREAK);
+    }
+
+    /** Prints deadlines due on the given date, or reports that none are due. */
+    public void printDeadlinesOn(LocalDate date, List<Deadline> deadlines) {
+        String formattedDate = Deadline.formatDate(date);
+        if (deadlines.isEmpty()) {
+            println("There are no deadlines due on " + formattedDate + ".");
+            return;
+        }
+
+        System.out.println("  Here are the deadlines due on " + formattedDate + ":");
+        for (int i = 0; i < deadlines.size(); i++) {
+            System.out.printf("  %d.%s%n", i + 1, deadlines.get(i));
         }
         System.out.println(PAGE_BREAK);
     }

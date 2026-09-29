@@ -954,3 +954,53 @@ Expected file checkpoints (`data/athena.txt`):
   "ATHENA\t1\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\nT\t0\toriginal\n"
 ]
 ```
+
+## Test case 14: Find deadlines by date
+
+Aim: Verify that the `on` command uses parsed calendar dates to list only
+deadlines due on the requested date, reports an empty result, rejects missing or
+impossible dates, and never changes the save file.
+
+Input:
+
+```text
+todo unrelated
+deadline first /by 2026-06-07
+deadline other date /by 2026-06-08
+deadline second /by 2026-06-07
+on 2026-06-07
+on 2026-06-09
+on 2026-02-30
+on
+bye
+```
+
+Expected output:
+
+```text
+  Here are the deadlines due on Jun 07 2026:
+  1.[D][ ] first (by: Jun 07 2026)
+  2.[D][ ] second (by: Jun 07 2026)
+
+  There are no deadlines due on Jun 09 2026.
+
+  Please provide a valid date in yyyy-MM-dd format after on.
+
+  Please provide a valid date in yyyy-MM-dd format after on.
+```
+
+Expected file checkpoints (`data/athena.txt`):
+
+```json
+[
+  "ATHENA\t1\nT\t0\tunrelated\n",
+  "ATHENA\t1\nT\t0\tunrelated\nD\t0\tfirst\t2026-06-07\n",
+  "ATHENA\t1\nT\t0\tunrelated\nD\t0\tfirst\t2026-06-07\nD\t0\tother date\t2026-06-08\n",
+  "ATHENA\t1\nT\t0\tunrelated\nD\t0\tfirst\t2026-06-07\nD\t0\tother date\t2026-06-08\nD\t0\tsecond\t2026-06-07\n",
+  "ATHENA\t1\nT\t0\tunrelated\nD\t0\tfirst\t2026-06-07\nD\t0\tother date\t2026-06-08\nD\t0\tsecond\t2026-06-07\n",
+  "ATHENA\t1\nT\t0\tunrelated\nD\t0\tfirst\t2026-06-07\nD\t0\tother date\t2026-06-08\nD\t0\tsecond\t2026-06-07\n",
+  "ATHENA\t1\nT\t0\tunrelated\nD\t0\tfirst\t2026-06-07\nD\t0\tother date\t2026-06-08\nD\t0\tsecond\t2026-06-07\n",
+  "ATHENA\t1\nT\t0\tunrelated\nD\t0\tfirst\t2026-06-07\nD\t0\tother date\t2026-06-08\nD\t0\tsecond\t2026-06-07\n",
+  "ATHENA\t1\nT\t0\tunrelated\nD\t0\tfirst\t2026-06-07\nD\t0\tother date\t2026-06-08\nD\t0\tsecond\t2026-06-07\n"
+]
+```
