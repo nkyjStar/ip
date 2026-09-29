@@ -10,10 +10,11 @@ public class Athena {
     private final Output output = new Output();
     private final TaskManager taskManager = new TaskManager(output);
 
-    /** Parses and executes one user command. */
-    private void executeCommand(String line) {
+    /** Parses and executes one user command, returning whether it should exit the application. */
+    private boolean executeCommand(String line) {
         Command command = Parser.parse(line);
         command.execute(taskManager, output);
+        return command.isExit();
     }
 
     /** Starts Athena and processes commands until the user says goodbye. */
@@ -28,9 +29,10 @@ public class Athena {
         // Create input scanner
         Input input = new Input();
 
-        // Keep querying input till "bye"
-        while (input.hasNextLine() && input.parseInput(athena.output, athena::executeCommand)) {
-            // Continue querying input
+        boolean isExit = false;
+        while (!isExit && input.hasNextLine()) {
+            String line = input.readCommand(athena.output);
+            isExit = athena.executeCommand(line);
         }
 
         athena.output.farewell();

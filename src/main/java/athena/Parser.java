@@ -5,6 +5,7 @@ import java.util.Locale;
 import athena.command.AddCommand;
 import athena.command.DeleteCommand;
 import athena.command.Command;
+import athena.command.ExitCommand;
 import athena.command.InvalidCommand;
 import athena.command.ListCommand;
 import athena.command.MarkCommand;
@@ -36,6 +37,11 @@ public final class Parser {
             return new UnmarkCommand(command + " " + argument);
         case "delete":
             return new DeleteCommand(command + " " + argument);
+        case "bye":
+            if (!argument.isEmpty()) {
+                return new InvalidCommand(UNKNOWN_COMMAND_MESSAGE);
+            }
+            return new ExitCommand();
         case "todo":
         case "deadline":
         case "event":
