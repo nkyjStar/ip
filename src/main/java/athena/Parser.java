@@ -3,6 +3,7 @@ package athena;
 import java.util.Locale;
 
 import athena.command.AddCommand;
+import athena.command.DeleteCommand;
 import athena.command.ListCommand;
 import athena.io.Output;
 import athena.task.TaskManager;
@@ -36,7 +37,7 @@ public class Parser {
                 taskManager.changeTaskStatus(command + " " + argument, command.equals("mark"));
                 break;
             case "delete":
-                taskManager.deleteTask(command + " " + argument);
+                new DeleteCommand(command + " " + argument).execute(taskManager);
                 break;
             case "todo":
             case "deadline":
