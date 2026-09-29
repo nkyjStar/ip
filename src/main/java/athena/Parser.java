@@ -5,6 +5,8 @@ import java.util.Locale;
 import athena.command.AddCommand;
 import athena.command.DeleteCommand;
 import athena.command.ListCommand;
+import athena.command.MarkCommand;
+import athena.command.UnmarkCommand;
 import athena.io.Output;
 import athena.task.TaskManager;
 
@@ -33,8 +35,10 @@ public class Parser {
                 }
                 break;
             case "mark":
+                new MarkCommand(command + " " + argument).execute(taskManager);
+                break;
             case "unmark":
-                taskManager.changeTaskStatus(command + " " + argument, command.equals("mark"));
+                new UnmarkCommand(command + " " + argument).execute(taskManager);
                 break;
             case "delete":
                 new DeleteCommand(command + " " + argument).execute(taskManager);
