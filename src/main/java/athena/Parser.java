@@ -2,6 +2,7 @@ package athena;
 
 import java.util.Locale;
 
+import athena.command.ListCommand;
 import athena.io.Output;
 import athena.task.TaskManager;
 
@@ -26,7 +27,7 @@ public class Parser {
                 if (!argument.isEmpty()) {
                     output.println("The list command does not accept arguments.");
                 } else {
-                    taskManager.listTasks();
+                    new ListCommand().execute(taskManager);
                 }
                 break;
             case "mark":
