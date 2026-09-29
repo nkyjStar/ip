@@ -182,7 +182,7 @@ public class Storage {
             text.append(type).append('\t').append(task.isDone() ? "1" : "0").append('\t');
             text.append(escape(task.getDescription()));
             if (task instanceof Deadline deadline) {
-                text.append('\t').append(escape(deadline.getDeadline()));
+                text.append('\t').append(deadline.getDeadline());
             } else if (task instanceof Event event) {
                 text.append('\t').append(escape(event.getStart())).append('\t').append(escape(event.getEnd()));
             }

@@ -143,6 +143,18 @@ Storage error scenarios (JSON fixtures):
     ]
   },
   {
+    "name": "invalid deadline date",
+    "initial": "ATHENA\t1\nD\t0\ttask\t2026-02-30\n",
+    "expected": [
+      "Could not load tasks:",
+      "yyyy-MM-dd"
+    ],
+    "forbidden": [
+      "Here are the tasks",
+      "Noted. I have added"
+    ]
+  },
+  {
     "name": "unknown version",
     "initial": "ATHENA\t2\n",
     "expected": [
@@ -332,7 +344,7 @@ Storage error scenarios (JSON fixtures):
   },
   {
     "name": "rollback middle deletion",
-    "initial": "[T][X] first\n[D][ ] middle (by: Friday)\n[T][ ] last\n",
+    "initial": "[T][X] first\n[D][ ] middle (by: 2026-06-05)\n[T][ ] last\n",
     "runtime": "directory",
     "commands": [
       "delete 2",
@@ -342,7 +354,7 @@ Storage error scenarios (JSON fixtures):
     "expected": [
       "Could not save tasks. Change was not applied:",
       "1.[T][X] first",
-      "2.[D][ ] middle (by: Friday)",
+      "2.[D][ ] middle (by: Jun 05 2026)",
       "3.[T][ ] last"
     ],
     "forbidden": [
@@ -383,12 +395,12 @@ Expected file checkpoints (`data/athena.txt`):
 
 ## Test case 2: Add and list a Deadline
 
-Aim: Verify that a Deadline stores and displays its `/by` date/time string.
+Aim: Verify that a Deadline stores an ISO date and displays it in a friendlier format.
 
 Input:
 
 ```text
-deadline return book /by Sunday
+deadline return book /by 2019-10-15
 list
 bye
 ```
@@ -396,17 +408,17 @@ bye
 Expected output:
 
 ```text
-[D][ ] return book (by: Sunday)
-1.[D][ ] return book (by: Sunday)
+[D][ ] return book (by: Oct 15 2019)
+1.[D][ ] return book (by: Oct 15 2019)
 ```
 
 Expected file checkpoints (`data/athena.txt`):
 
 ```json
 [
-  "ATHENA\t1\nD\t0\treturn book\tSunday\n",
-  "ATHENA\t1\nD\t0\treturn book\tSunday\n",
-  "ATHENA\t1\nD\t0\treturn book\tSunday\n"
+  "ATHENA\t1\nD\t0\treturn book\t2019-10-15\n",
+  "ATHENA\t1\nD\t0\treturn book\t2019-10-15\n",
+  "ATHENA\t1\nD\t0\treturn book\t2019-10-15\n"
 ]
 ```
 
@@ -516,7 +528,7 @@ Input:
 ```text
 todo
 todo café
-deadline return book /by Sunday
+deadline return book /by 2026-06-07
 event meeting /from 2pm /to 4pm
 mark 2
 unmark 2
@@ -531,14 +543,14 @@ Expected output:
 ```text
 The description of a task cannot be empty.
 [T][ ] café
-[D][ ] return book (by: Sunday)
+[D][ ] return book (by: Jun 07 2026)
 [E][ ] meeting (from: 2pm to: 4pm)
-[D][X] return book (by: Sunday)
-[D][ ] return book (by: Sunday)
+[D][X] return book (by: Jun 07 2026)
+[D][ ] return book (by: Jun 07 2026)
 Task number must be between 1 and 3.
 Please provide a valid task number after unmark.
 1.[T][ ] café
-2.[D][ ] return book (by: Sunday)
+2.[D][ ] return book (by: Jun 07 2026)
 3.[E][ ] meeting (from: 2pm to: 4pm)
 ```
 
@@ -548,14 +560,14 @@ Expected file checkpoints (`data/athena.txt`):
 [
   null,
   "ATHENA\t1\nT\t0\tcaf\u00e9\n",
-  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t0\treturn book\tSunday\n",
-  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t0\treturn book\tSunday\nE\t0\tmeeting\t2pm\t4pm\n",
-  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t1\treturn book\tSunday\nE\t0\tmeeting\t2pm\t4pm\n",
-  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t0\treturn book\tSunday\nE\t0\tmeeting\t2pm\t4pm\n",
-  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t0\treturn book\tSunday\nE\t0\tmeeting\t2pm\t4pm\n",
-  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t0\treturn book\tSunday\nE\t0\tmeeting\t2pm\t4pm\n",
-  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t0\treturn book\tSunday\nE\t0\tmeeting\t2pm\t4pm\n",
-  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t0\treturn book\tSunday\nE\t0\tmeeting\t2pm\t4pm\n"
+  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t0\treturn book\t2026-06-07\n",
+  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t0\treturn book\t2026-06-07\nE\t0\tmeeting\t2pm\t4pm\n",
+  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t1\treturn book\t2026-06-07\nE\t0\tmeeting\t2pm\t4pm\n",
+  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t0\treturn book\t2026-06-07\nE\t0\tmeeting\t2pm\t4pm\n",
+  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t0\treturn book\t2026-06-07\nE\t0\tmeeting\t2pm\t4pm\n",
+  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t0\treturn book\t2026-06-07\nE\t0\tmeeting\t2pm\t4pm\n",
+  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t0\treturn book\t2026-06-07\nE\t0\tmeeting\t2pm\t4pm\n",
+  "ATHENA\t1\nT\t0\tcaf\u00e9\nD\t0\treturn book\t2026-06-07\nE\t0\tmeeting\t2pm\t4pm\n"
 ]
 ```
 
@@ -566,7 +578,7 @@ Aim: Verify startup restores order, all task types, Unicode, dates, and completi
 Initial file:
 
 ```initial
-"[T][X] caf\u00e9\n[D][ ] return book (by: June 6th)\n[E][X] meeting (from: Aug 6th 2pm to: 4pm)\n"
+"[T][X] caf\u00e9\n[D][ ] return book (by: 2026-06-06)\n[E][X] meeting (from: Aug 6th 2pm to: 4pm)\n"
 ```
 
 Input:
@@ -584,14 +596,14 @@ Expected output:
 
 ```text
 1.[T][X] café
-2.[D][ ] return book (by: June 6th)
+2.[D][ ] return book (by: Jun 06 2026)
 3.[E][X] meeting (from: Aug 6th 2pm to: 4pm)
 [T][ ] new task
 Now you have 4 tasks in the list
 [E][ ] meeting (from: Aug 6th 2pm to: 4pm)
-[D][X] return book (by: June 6th)
+[D][X] return book (by: Jun 06 2026)
 1.[T][X] café
-2.[D][X] return book (by: June 6th)
+2.[D][X] return book (by: Jun 06 2026)
 3.[E][ ] meeting (from: Aug 6th 2pm to: 4pm)
 4.[T][ ] new task
 ```
@@ -600,12 +612,12 @@ Expected file checkpoints (`data/athena.txt`):
 
 ```json
 [
-  "[T][X] caf\u00e9\n[D][ ] return book (by: June 6th)\n[E][X] meeting (from: Aug 6th 2pm to: 4pm)\n",
-  "ATHENA\t1\nT\t1\tcaf\u00e9\nD\t0\treturn book\tJune 6th\nE\t1\tmeeting\tAug 6th 2pm\t4pm\nT\t0\tnew task\n",
-  "ATHENA\t1\nT\t1\tcaf\u00e9\nD\t0\treturn book\tJune 6th\nE\t0\tmeeting\tAug 6th 2pm\t4pm\nT\t0\tnew task\n",
-  "ATHENA\t1\nT\t1\tcaf\u00e9\nD\t1\treturn book\tJune 6th\nE\t0\tmeeting\tAug 6th 2pm\t4pm\nT\t0\tnew task\n",
-  "ATHENA\t1\nT\t1\tcaf\u00e9\nD\t1\treturn book\tJune 6th\nE\t0\tmeeting\tAug 6th 2pm\t4pm\nT\t0\tnew task\n",
-  "ATHENA\t1\nT\t1\tcaf\u00e9\nD\t1\treturn book\tJune 6th\nE\t0\tmeeting\tAug 6th 2pm\t4pm\nT\t0\tnew task\n"
+  "[T][X] caf\u00e9\n[D][ ] return book (by: 2026-06-06)\n[E][X] meeting (from: Aug 6th 2pm to: 4pm)\n",
+  "ATHENA\t1\nT\t1\tcaf\u00e9\nD\t0\treturn book\t2026-06-06\nE\t1\tmeeting\tAug 6th 2pm\t4pm\nT\t0\tnew task\n",
+  "ATHENA\t1\nT\t1\tcaf\u00e9\nD\t0\treturn book\t2026-06-06\nE\t0\tmeeting\tAug 6th 2pm\t4pm\nT\t0\tnew task\n",
+  "ATHENA\t1\nT\t1\tcaf\u00e9\nD\t1\treturn book\t2026-06-06\nE\t0\tmeeting\tAug 6th 2pm\t4pm\nT\t0\tnew task\n",
+  "ATHENA\t1\nT\t1\tcaf\u00e9\nD\t1\treturn book\t2026-06-06\nE\t0\tmeeting\tAug 6th 2pm\t4pm\nT\t0\tnew task\n",
+  "ATHENA\t1\nT\t1\tcaf\u00e9\nD\t1\treturn book\t2026-06-06\nE\t0\tmeeting\tAug 6th 2pm\t4pm\nT\t0\tnew task\n"
 ]
 ```
 
@@ -660,9 +672,10 @@ unmark abc
 mark 1
 todo
 deadline incomplete
+deadline impossible /by 2026-02-30
 event incomplete
 todo path C:\notes | [X]
-deadline read / notes /by 06/07/2026
+deadline read / notes /by 2026-07-06
 event tricky /from 06/07 2pm /to end to: later (from: literal)
 mark 99999999999999999999
 list
@@ -677,13 +690,14 @@ Please provide a valid task number after unmark.
 There are no tasks in the list.
 The description of a task cannot be empty.
 A deadline must use the format: deadline description /by date.
+The deadline date must use yyyy-MM-dd.
 An event must use the format: event description /from start /to end.
 [T][ ] path C:\notes | [X]
-[D][ ] read / notes (by: 06/07/2026)
+[D][ ] read / notes (by: Jul 06 2026)
 [E][ ] tricky (from: 06/07 2pm to: end to: later (from: literal))
 Please provide a valid task number after mark.
 1.[T][ ] path C:\notes | [X]
-2.[D][ ] read / notes (by: 06/07/2026)
+2.[D][ ] read / notes (by: Jul 06 2026)
 3.[E][ ] tricky (from: 06/07 2pm to: end to: later (from: literal))
 ```
 
@@ -697,12 +711,13 @@ Expected file checkpoints:
   null,
   null,
   null,
+  null,
   "ATHENA\t1\nT\t0\tpath C:\\\\notes | [X]\n",
-  "ATHENA\t1\nT\t0\tpath C:\\\\notes | [X]\nD\t0\tread / notes\t06/07/2026\n",
-  "ATHENA\t1\nT\t0\tpath C:\\\\notes | [X]\nD\t0\tread / notes\t06/07/2026\nE\t0\ttricky\t06/07 2pm\tend to: later (from: literal)\n",
-  "ATHENA\t1\nT\t0\tpath C:\\\\notes | [X]\nD\t0\tread / notes\t06/07/2026\nE\t0\ttricky\t06/07 2pm\tend to: later (from: literal)\n",
-  "ATHENA\t1\nT\t0\tpath C:\\\\notes | [X]\nD\t0\tread / notes\t06/07/2026\nE\t0\ttricky\t06/07 2pm\tend to: later (from: literal)\n",
-  "ATHENA\t1\nT\t0\tpath C:\\\\notes | [X]\nD\t0\tread / notes\t06/07/2026\nE\t0\ttricky\t06/07 2pm\tend to: later (from: literal)\n"
+  "ATHENA\t1\nT\t0\tpath C:\\\\notes | [X]\nD\t0\tread / notes\t2026-07-06\n",
+  "ATHENA\t1\nT\t0\tpath C:\\\\notes | [X]\nD\t0\tread / notes\t2026-07-06\nE\t0\ttricky\t06/07 2pm\tend to: later (from: literal)\n",
+  "ATHENA\t1\nT\t0\tpath C:\\\\notes | [X]\nD\t0\tread / notes\t2026-07-06\nE\t0\ttricky\t06/07 2pm\tend to: later (from: literal)\n",
+  "ATHENA\t1\nT\t0\tpath C:\\\\notes | [X]\nD\t0\tread / notes\t2026-07-06\nE\t0\ttricky\t06/07 2pm\tend to: later (from: literal)\n",
+  "ATHENA\t1\nT\t0\tpath C:\\\\notes | [X]\nD\t0\tread / notes\t2026-07-06\nE\t0\ttricky\t06/07 2pm\tend to: later (from: literal)\n"
 ]
 ```
 
@@ -715,7 +730,7 @@ Input:
 
 ```text
 todo read book
-deadline return book /by June 6th
+deadline return book /by 2026-06-06
 event project meeting /from Aug 6th 2pm /to 4pm
 todo join sports club
 todo borrow book
@@ -735,7 +750,7 @@ Expected output:
 
   Here are the tasks in your list:
   1.[T][ ] read book
-  2.[D][ ] return book (by: June 6th)
+  2.[D][ ] return book (by: Jun 06 2026)
   3.[T][ ] join sports club
   4.[T][ ] borrow book
 
@@ -752,15 +767,15 @@ Expected file checkpoints (`data/athena.txt`):
 ```json
 [
   "ATHENA\t1\nT\t0\tread book\n",
-  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\tJune 6th\n",
-  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\tJune 6th\nE\t0\tproject meeting\tAug 6th 2pm\t4pm\n",
-  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\tJune 6th\nE\t0\tproject meeting\tAug 6th 2pm\t4pm\nT\t0\tjoin sports club\n",
-  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\tJune 6th\nE\t0\tproject meeting\tAug 6th 2pm\t4pm\nT\t0\tjoin sports club\nT\t0\tborrow book\n",
-  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\tJune 6th\nT\t0\tjoin sports club\nT\t0\tborrow book\n",
-  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\tJune 6th\nT\t0\tjoin sports club\nT\t0\tborrow book\n",
-  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\tJune 6th\nT\t1\tjoin sports club\nT\t0\tborrow book\n",
-  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\tJune 6th\nT\t0\tjoin sports club\nT\t0\tborrow book\n",
-  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\tJune 6th\nT\t0\tjoin sports club\nT\t0\tborrow book\n"
+  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\t2026-06-06\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\t2026-06-06\nE\t0\tproject meeting\tAug 6th 2pm\t4pm\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\t2026-06-06\nE\t0\tproject meeting\tAug 6th 2pm\t4pm\nT\t0\tjoin sports club\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\t2026-06-06\nE\t0\tproject meeting\tAug 6th 2pm\t4pm\nT\t0\tjoin sports club\nT\t0\tborrow book\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\t2026-06-06\nT\t0\tjoin sports club\nT\t0\tborrow book\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\t2026-06-06\nT\t0\tjoin sports club\nT\t0\tborrow book\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\t2026-06-06\nT\t1\tjoin sports club\nT\t0\tborrow book\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\t2026-06-06\nT\t0\tjoin sports club\nT\t0\tborrow book\n",
+  "ATHENA\t1\nT\t0\tread book\nD\t0\treturn book\t2026-06-06\nT\t0\tjoin sports club\nT\t0\tborrow book\n"
 ]
 ```
 
@@ -774,7 +789,7 @@ Input:
 ```text
 todo read book
 event meeting /from 2pm /to 4pm
-deadline return book /by Sunday
+deadline return book /by 2026-06-07
 mark 1
 DELETE 1
 delete 2
@@ -797,7 +812,7 @@ Expected output:
   Now you have 2 tasks in the list.
 
   Noted. I've removed this task:
-    [D][ ] return book (by: Sunday)
+    [D][ ] return book (by: Jun 07 2026)
   Now you have 1 tasks in the list.
 
   Noted. I've removed this task:
@@ -819,9 +834,9 @@ Expected file checkpoints (`data/athena.txt`):
 [
   "ATHENA\t1\nT\t0\tread book\n",
   "ATHENA\t1\nT\t0\tread book\nE\t0\tmeeting\t2pm\t4pm\n",
-  "ATHENA\t1\nT\t0\tread book\nE\t0\tmeeting\t2pm\t4pm\nD\t0\treturn book\tSunday\n",
-  "ATHENA\t1\nT\t1\tread book\nE\t0\tmeeting\t2pm\t4pm\nD\t0\treturn book\tSunday\n",
-  "ATHENA\t1\nE\t0\tmeeting\t2pm\t4pm\nD\t0\treturn book\tSunday\n",
+  "ATHENA\t1\nT\t0\tread book\nE\t0\tmeeting\t2pm\t4pm\nD\t0\treturn book\t2026-06-07\n",
+  "ATHENA\t1\nT\t1\tread book\nE\t0\tmeeting\t2pm\t4pm\nD\t0\treturn book\t2026-06-07\n",
+  "ATHENA\t1\nE\t0\tmeeting\t2pm\t4pm\nD\t0\treturn book\t2026-06-07\n",
   "ATHENA\t1\nE\t0\tmeeting\t2pm\t4pm\n",
   "ATHENA\t1\n",
   "ATHENA\t1\n",

@@ -1,6 +1,7 @@
 """Run the UI plan on Java 25 and check save files after every command."""
 
 import json
+from datetime import date
 from pathlib import Path
 import queue
 import re
@@ -25,7 +26,8 @@ def displayed_tasks(saved):
         fields[2:] = [re.sub(r"\\(.)", lambda m: escapes[m[1]], value) for value in fields[2:]]
         task = f"[{fields[0]}][{'X' if fields[1] == '1' else ' '}] {fields[2]}"
         if fields[0] == "D":
-            task += f" (by: {fields[3]})"
+            deadline = date.fromisoformat(fields[3])
+            task += f" (by: {deadline.strftime('%b %d %Y')})"
         elif fields[0] == "E":
             task += f" (from: {fields[3]} to: {fields[4]})"
         result.append(task)

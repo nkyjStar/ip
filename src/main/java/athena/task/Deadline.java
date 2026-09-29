@@ -1,19 +1,32 @@
 package athena.task;
 
-/** Represents a task that must be completed by a specified date or time. */
-public class Deadline extends Task {
-    private final String deadline;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
-    /** Creates a deadline from separately stored fields, without interpreting command delimiters. */
+/** Represents a task that must be completed by a specified date. */
+public class Deadline extends Task {
+    private static final DateTimeFormatter DISPLAY_FORMAT =
+            DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.ENGLISH);
+    private final LocalDate deadline;
+
+    /** Creates a deadline from separately stored fields using an ISO date. */
     public Deadline(String description, String deadline) {
+        this(description, parseDate(deadline));
+    }
+
+    /** Creates a deadline with the given description and due date. */
+    public Deadline(String description, LocalDate deadline) {
         super(description);
-        if (deadline == null || deadline.isBlank()) {
+        if (deadline == null) {
             throw new IllegalArgumentException("The date of a deadline cannot be empty.");
         }
         this.deadline = deadline;
     }
 
-    public String getDeadline() {
+    /** Returns the due date represented by this deadline. */
+    public LocalDate getDeadline() {
         return deadline;
     }
 
@@ -24,7 +37,7 @@ public class Deadline extends Task {
     public Deadline(String args) {
         String[] argList = parseArgs(args);
         super(argList[0]);
-        deadline = argList[1];
+        deadline = parseDate(argList[1]);
     }
 
     /**
@@ -55,8 +68,20 @@ public class Deadline extends Task {
         return argList;
     }
 
+    /** Parses a strict ISO date so impossible calendar dates are rejected. */
+    private static LocalDate parseDate(String date) {
+        if (date == null || date.isBlank()) {
+            throw new IllegalArgumentException("The date of a deadline cannot be empty.");
+        }
+        try {
+            return LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);
+        } catch (DateTimeParseException exception) {
+            throw new IllegalArgumentException("The deadline date must use yyyy-MM-dd.", exception);
+        }
+    }
+
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + deadline + ")";
+        return "[D]" + super.toString() + " (by: " + deadline.format(DISPLAY_FORMAT) + ")";
     }
 }
