@@ -1,28 +1,45 @@
 package athena.task;
 
+import java.time.LocalDate;
+
 /**
  * Represents a task that occurs between a specified start and end date or time.
  */
 public class Event extends Task {
-    private final String start;
-    private final String end;
+    private final TaskDateTime start;
+    private final TaskDateTime end;
 
-    /** Creates an event from separately stored fields, without interpreting command delimiters. */
+    /** Creates an event from separately stored date and optional time fields. */
     public Event(String description, String start, String end) {
+        this(description, TaskDateTime.parse(start), TaskDateTime.parse(end));
+    }
+
+    /** Creates an event with parsed start and end values. */
+    public Event(String description, TaskDateTime start, TaskDateTime end) {
         super(description);
-        if (start == null || start.isBlank() || end == null || end.isBlank()) {
-            throw new IllegalArgumentException("An event must have both a start and an end time.");
+        if (start == null || end == null) {
+            throw new IllegalArgumentException("An event must have both a start and an end date.");
+        }
+        if (start.isAfter(end)) {
+            throw new IllegalArgumentException("An event cannot end before it starts.");
         }
         this.start = start;
         this.end = end;
     }
 
-    public String getStart() {
+    /** Returns the event's parsed start value. */
+    public TaskDateTime getStart() {
         return start;
     }
 
-    public String getEnd() {
+    /** Returns the event's parsed end value. */
+    public TaskDateTime getEnd() {
         return end;
+    }
+
+    /** Returns whether this event includes the given date. */
+    public boolean occursOn(LocalDate date) {
+        return !date.isBefore(start.getDate()) && !date.isAfter(end.getDate());
     }
 
     /**
@@ -32,8 +49,11 @@ public class Event extends Task {
     public Event(String args) {
         String[] argList = parseArgs(args);
         super(argList[0]);
-        start = argList[1];
-        end = argList[2];
+        start = TaskDateTime.parse(argList[1]);
+        end = TaskDateTime.parse(argList[2]);
+        if (start.isAfter(end)) {
+            throw new IllegalArgumentException("An event cannot end before it starts.");
+        }
     }
 
     /**

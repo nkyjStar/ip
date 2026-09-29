@@ -84,12 +84,14 @@ public class TaskList {
         return removedTask;
     }
 
-    /** Returns the deadlines due on the given date in their current list order. */
-    public List<Deadline> findDeadlinesOn(LocalDate date) {
-        List<Deadline> matches = new ArrayList<>();
+    /** Returns deadlines and events occurring on the given date in their current list order. */
+    public List<Task> findTasksOn(LocalDate date) {
+        List<Task> matches = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            if (tasks[i] instanceof Deadline deadline && deadline.getDeadline().equals(date)) {
+            if (tasks[i] instanceof Deadline deadline && deadline.getDeadline().getDate().equals(date)) {
                 matches.add(deadline);
+            } else if (tasks[i] instanceof Event event && event.occursOn(date)) {
+                matches.add(event);
             }
         }
         return matches;

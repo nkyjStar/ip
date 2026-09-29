@@ -182,9 +182,10 @@ public class Storage {
             text.append(type).append('\t').append(task.isDone() ? "1" : "0").append('\t');
             text.append(escape(task.getDescription()));
             if (task instanceof Deadline deadline) {
-                text.append('\t').append(deadline.getDeadline());
+                text.append('\t').append(deadline.getDeadline().toStorageString());
             } else if (task instanceof Event event) {
-                text.append('\t').append(escape(event.getStart())).append('\t').append(escape(event.getEnd()));
+                text.append('\t').append(event.getStart().toStorageString());
+                text.append('\t').append(event.getEnd().toStorageString());
             }
             text.append('\n');
         }

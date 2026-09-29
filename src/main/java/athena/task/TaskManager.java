@@ -25,9 +25,9 @@ public class TaskManager {
         output.printList(tasks);
     }
 
-    /** Displays deadlines due on the specified date in their current list order. */
-    public void listDeadlinesOn(LocalDate date) {
-        output.printDeadlinesOn(date, tasks.findDeadlinesOn(date));
+    /** Displays deadlines and events occurring on the specified date in list order. */
+    public void listTasksOn(LocalDate date) {
+        output.printTasksOn(date, tasks.findTasksOn(date));
     }
 
     /** Adds a validated task and reports success only after saving it. */

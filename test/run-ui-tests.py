@@ -26,12 +26,24 @@ def displayed_tasks(saved):
         fields[2:] = [re.sub(r"\\(.)", lambda m: escapes[m[1]], value) for value in fields[2:]]
         task = f"[{fields[0]}][{'X' if fields[1] == '1' else ' '}] {fields[2]}"
         if fields[0] == "D":
-            deadline = date.fromisoformat(fields[3])
-            task += f" (by: {deadline.strftime('%b %d %Y')})"
+            task += f" (by: {displayed_date_time(fields[3])})"
         elif fields[0] == "E":
-            task += f" (from: {fields[3]} to: {fields[4]})"
+            task += f" (from: {displayed_date_time(fields[3])} to: {displayed_date_time(fields[4])})"
         result.append(task)
     return result
+
+
+def displayed_date_time(value):
+    """Render a canonical stored date and optional compact time."""
+    parts = value.split()
+    result = date.fromisoformat(parts[0]).strftime("%b %d %Y")
+    if len(parts) == 1:
+        return result
+    hour = int(parts[1][:2])
+    minute = parts[1][2:]
+    suffix = "AM" if hour < 12 else "PM"
+    display_hour = hour % 12 or 12
+    return f"{result} {display_hour}:{minute} {suffix}"
 
 
 def run_case(case, classes, work):

@@ -1,23 +1,16 @@
 package athena.task;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Locale;
-
-/** Represents a task that must be completed by a specified date. */
+/** Represents a task that must be completed by a specified date and optional time. */
 public class Deadline extends Task {
-    private static final DateTimeFormatter DISPLAY_FORMAT =
-            DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.ENGLISH);
-    private final LocalDate deadline;
+    private final TaskDateTime deadline;
 
     /** Creates a deadline from separately stored fields using an ISO date. */
     public Deadline(String description, String deadline) {
-        this(description, parseDate(deadline));
+        this(description, TaskDateTime.parse(deadline));
     }
 
-    /** Creates a deadline with the given description and due date. */
-    public Deadline(String description, LocalDate deadline) {
+    /** Creates a deadline with the given description, date, and optional time. */
+    public Deadline(String description, TaskDateTime deadline) {
         super(description);
         if (deadline == null) {
             throw new IllegalArgumentException("The date of a deadline cannot be empty.");
@@ -25,14 +18,9 @@ public class Deadline extends Task {
         this.deadline = deadline;
     }
 
-    /** Returns the due date represented by this deadline. */
-    public LocalDate getDeadline() {
+    /** Returns the date and optional time represented by this deadline. */
+    public TaskDateTime getDeadline() {
         return deadline;
-    }
-
-    /** Returns a deadline date in the user-facing display format. */
-    public static String formatDate(LocalDate date) {
-        return date.format(DISPLAY_FORMAT);
     }
 
     /**
@@ -42,7 +30,7 @@ public class Deadline extends Task {
     public Deadline(String args) {
         String[] argList = parseArgs(args);
         super(argList[0]);
-        deadline = parseDate(argList[1]);
+        deadline = TaskDateTime.parse(argList[1]);
     }
 
     /**
@@ -73,20 +61,8 @@ public class Deadline extends Task {
         return argList;
     }
 
-    /** Parses a strict ISO date so impossible calendar dates are rejected. */
-    private static LocalDate parseDate(String date) {
-        if (date == null || date.isBlank()) {
-            throw new IllegalArgumentException("The date of a deadline cannot be empty.");
-        }
-        try {
-            return LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);
-        } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("The deadline date must use yyyy-MM-dd.", exception);
-        }
-    }
-
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + formatDate(deadline) + ")";
+        return "[D]" + super.toString() + " (by: " + deadline + ")";
     }
 }
