@@ -1,7 +1,7 @@
 # Athena User Guide
 
 Athena is a command-line chatbot that helps you keep track of todos, deadlines, and events.
-Type one command at a time and press Enter. You can keep up to 100 tasks.
+Type one command at a time and press Enter. You can store up to 100 tasks.
 
 ## Getting started
 
@@ -61,8 +61,6 @@ Adds a task that is due on a particular date, optionally at a particular time.
 
 Format: `deadline DESCRIPTION /by DATE [TIME]`
 
-Both the description and the date are required.
-
 Examples:
 
 - `deadline Submit assignment /by 5/10/2026` adds a task due on October 5, 2026.
@@ -75,8 +73,7 @@ Adds a task with a start and an end.
 Format: `event DESCRIPTION /from START_DATE [START_TIME] /to END_DATE [END_TIME]`
 
 - Supply both dates, even for a one-day event.
-- The end must not be before the start. When both times are supplied on the same date, the end time
-  must not be earlier than the start time.
+- The end date and time must come after the start date and time.
 
 Example: `event Study camp /from 5/10/2026 /to 7/10/2026` adds an event spanning October 5–7.
 
@@ -97,7 +94,7 @@ Example task display:
 
 ## Marking a task: `mark` / `unmark`
 
-Marks a task as completed or changes it back to unfinished.
+Marks or unmarks a task to change its completion status.
 
 Formats: `mark INDEX` and `unmark INDEX`
 
@@ -126,7 +123,7 @@ Completed tasks are included; todos are not.
 
 Format: `on DATE`
 
-Example: `on 6/10/2026` includes the study camp above. Supply a date without a time.
+Example: `on 6/10/2026` includes the study camp above.
 
 ## Deleting a task: `delete`
 
@@ -155,5 +152,5 @@ folder to use the same task list; a missing file starts an empty list.
 - If the file changes outside Athena, restart before making more changes.
 - If loading fails, Athena exits without overwriting the file. Keep a backup and check the reported
   error or restore a known-good copy.
-- For an invalid command, check the format in this guide and try again. If the list is full,
-  delete an unneeded task before adding another.
+- For an invalid command, check the format in this guide and try again. 
+- If the list is full, delete an unneeded task before adding another.
