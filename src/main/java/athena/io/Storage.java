@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import athena.task.Deadline;
 import athena.task.Event;
 import athena.task.Task;
+import athena.task.TaskDateTime;
 import athena.task.TaskList;
 import athena.task.Todo;
 
@@ -104,9 +105,9 @@ public class Storage {
         if (fields[0].equals("T") && fields.length == 3) {
             task = new Todo(fields[2]);
         } else if (fields[0].equals("D") && fields.length == 4) {
-            task = new Deadline(fields[2], fields[3]);
+            task = new Deadline(fields[2], parseStoredDateTime(fields[3]));
         } else if (fields[0].equals("E") && fields.length == 5) {
-            task = new Event(fields[2], fields[3], fields[4]);
+            task = new Event(fields[2], parseStoredDateTime(fields[3]), parseStoredDateTime(fields[4]));
         } else {
             throw new IllegalArgumentException("Invalid task type or field count.");
         }
@@ -114,6 +115,12 @@ public class Storage {
             task.markAsDone();
         }
         return task;
+    }
+
+    /** Parses a stored date-time, accepting the comma separator written by earlier versions. */
+    private TaskDateTime parseStoredDateTime(String value) {
+        String normalized = value.replaceFirst("^(\\d{4}-\\d{2}-\\d{2}), (\\d{4})$", "$1 $2");
+        return TaskDateTime.parse(normalized);
     }
 
     /** Reads the previous display format for compatibility with existing saves. */

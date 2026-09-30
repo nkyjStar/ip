@@ -118,7 +118,7 @@ public final class TaskDateTime {
 
     /** Returns a canonical representation suitable for storage. */
     public String toStorageString() {
-        return date + (hasTime() ? ", " + time.format(STORAGE_TIME_FORMAT) : "");
+        return date + (hasTime() ? " " + time.format(STORAGE_TIME_FORMAT) : "");
     }
 
     /** Formats a calendar date consistently for user-facing output. */
@@ -129,6 +129,6 @@ public final class TaskDateTime {
     /** Returns the date and optional time formatted for display. */
     @Override
     public String toString() {
-        return formatDate(date) + (hasTime() ? ", " + time.format(DISPLAY_TIME_FORMAT) : "");
+        return formatDate(date) + (hasTime() ? " " + time.format(DISPLAY_TIME_FORMAT) : "");
     }
 }
