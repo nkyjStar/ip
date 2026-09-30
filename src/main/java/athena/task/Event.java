@@ -85,6 +85,7 @@ public class Event extends Task {
         return argList;
     }
 
+    /** Returns this event in display format, including its start and end. */
     @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: " + start + " to: " + end + ")";

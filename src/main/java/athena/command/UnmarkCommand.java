@@ -12,6 +12,7 @@ public class UnmarkCommand extends Command {
         this.fullCommand = fullCommand;
     }
 
+    /** Marks the selected task as unfinished through the task manager. */
     @Override
     public void execute(TaskManager taskManager, Output output) {
         taskManager.changeTaskStatus(fullCommand, false);

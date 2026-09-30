@@ -12,6 +12,7 @@ public class InvalidCommand extends Command {
         this.message = message;
     }
 
+    /** Displays the validation error associated with this command. */
     @Override
     public void execute(TaskManager taskManager, Output output) {
         output.println(message);

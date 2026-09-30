@@ -12,6 +12,7 @@ public class AddCommand extends Command {
         this.fullCommand = fullCommand;
     }
 
+    /** Adds the requested task through the task manager. */
     @Override
     public void execute(TaskManager taskManager, Output output) {
         taskManager.addTask(fullCommand);

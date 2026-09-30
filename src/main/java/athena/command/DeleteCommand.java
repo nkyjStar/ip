@@ -12,6 +12,7 @@ public class DeleteCommand extends Command {
         this.fullCommand = fullCommand;
     }
 
+    /** Deletes the selected task through the task manager. */
     @Override
     public void execute(TaskManager taskManager, Output output) {
         taskManager.deleteTask(fullCommand);

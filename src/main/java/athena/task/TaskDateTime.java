@@ -126,6 +126,7 @@ public final class TaskDateTime {
         return date.format(DISPLAY_DATE_FORMAT);
     }
 
+    /** Returns the date and optional time formatted for display. */
     @Override
     public String toString() {
         return formatDate(date) + (hasTime() ? ", " + time.format(DISPLAY_TIME_FORMAT) : "");

@@ -4,7 +4,7 @@ package athena.task;
 public class Deadline extends Task {
     private final TaskDateTime deadline;
 
-    /** Creates a deadline from separately stored fields using an ISO date. */
+    /** Creates a deadline from a description and a supported date with an optional time. */
     public Deadline(String description, String deadline) {
         this(description, TaskDateTime.parse(deadline));
     }
@@ -61,6 +61,7 @@ public class Deadline extends Task {
         return argList;
     }
 
+    /** Returns this deadline in display format, including its due date and optional time. */
     @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: " + deadline + ")";

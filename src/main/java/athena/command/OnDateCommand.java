@@ -9,11 +9,12 @@ import athena.task.TaskManager;
 public class OnDateCommand extends Command {
     private final LocalDate date;
 
-    /** Creates a query for deadlines due on the given date. */
+    /** Creates a query for deadlines and events occurring on the given date. */
     public OnDateCommand(LocalDate date) {
         this.date = date;
     }
 
+    /** Displays deadlines and events occurring on this command's date. */
     @Override
     public void execute(TaskManager taskManager, Output output) {
         taskManager.listTasksOn(date);

@@ -12,6 +12,7 @@ public class MarkCommand extends Command {
         this.fullCommand = fullCommand;
     }
 
+    /** Marks the selected task as completed through the task manager. */
     @Override
     public void execute(TaskManager taskManager, Output output) {
         taskManager.changeTaskStatus(fullCommand, true);
