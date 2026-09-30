@@ -12,7 +12,7 @@ import time
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGE_BREAK = "_" * 60
+PAGE_BREAK = "_" * 70
 
 
 def displayed_tasks(saved):

@@ -14,7 +14,27 @@ public class Output {
             + "  / _ \\ | __| '_ \\ / _ \\ '_ \\ / _` |\n"
             + " / ___ \\| |_| | | |  __/ | | | (_| |\n"
             + "/_/   \\_\\\\__|_| |_|\\___|_| |_|\\__,_|\n";
-    private static final String PAGE_BREAK = "____________________________________________________________";
+    private static final int LINE_WIDTH = 70;
+    private static final String PAGE_BREAK = "_".repeat(LINE_WIDTH);
+
+    /** Prints text within the separator width, preserving line breaks and leading indentation. */
+    private void printWrapped(String text) {
+        for (String line : text.replace("\t", "    ").split("\\R", -1)) {
+            int leadingSpaces = line.length() - line.stripLeading().length();
+            String indent = " ".repeat(Math.min(leadingSpaces, LINE_WIDTH - 1));
+            String remaining = line.stripLeading();
+            int available = LINE_WIDTH - indent.length();
+            while (remaining.length() > available) {
+                int splitAt = remaining.lastIndexOf(' ', available);
+                if (splitAt <= 0) {
+                    splitAt = available;
+                }
+                System.out.println(indent + remaining.substring(0, splitAt));
+                remaining = remaining.substring(splitAt).stripLeading();
+            }
+            System.out.println(indent + remaining);
+        }
+    }
 
     /** Prints Athena's greeting. */
     public void greeting() {
@@ -43,8 +63,7 @@ public class Output {
 
     /** Prints a formatted message followed by a page break. */
     public void println(String message) {
-        System.out.print("  ");
-        System.out.println(message);
+        printWrapped("  " + message);
         System.out.println(PAGE_BREAK);
     }
 
@@ -52,7 +71,7 @@ public class Output {
     public void printList(TaskList tasks) {
         System.out.println("  Here are the tasks in your list:");
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.printf("  %d.%s%n", i + 1, tasks.get(i));
+            printWrapped("  " + (i + 1) + "." + tasks.get(i));
         }
         System.out.println(PAGE_BREAK);
     }
@@ -66,7 +85,7 @@ public class Output {
 
         System.out.println("  Here are the matching tasks in your list:");
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.printf("  %d.%s%n", i + 1, tasks.get(i));
+            printWrapped("  " + (i + 1) + "." + tasks.get(i));
         }
         System.out.println(PAGE_BREAK);
     }
@@ -79,9 +98,9 @@ public class Output {
             return;
         }
 
-        System.out.println("  Here are the deadlines and events on " + formattedDate + ":");
+        printWrapped("  Here are the deadlines and events on " + formattedDate + ":");
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.printf("  %d.%s%n", i + 1, tasks.get(i));
+            printWrapped("  " + (i + 1) + "." + tasks.get(i));
         }
         System.out.println(PAGE_BREAK);
     }
