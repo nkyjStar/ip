@@ -5,17 +5,36 @@ Type one command at a time and press Enter. You can keep up to 100 tasks.
 
 ## Getting started
 
-1. Install Java 25. Check your version with `java -version`.
-2. Build `athena.jar` using the [build instructions](../README.md#building-and-running-the-fat-jar).
+1. Install JDK 25. Check that `java -version` and `javac -version` both show version 25.
+2. Build `athena.jar` using the [build instructions](#building-athena).
 3. From the project folder, run `java -jar build/libs/athena.jar`.
 4. Try `todo Read a book`, then `list`. Enter `bye` when you are finished.
+
+### Building Athena
+
+Download or clone the project, then open a terminal in the project folder (the folder containing
+`build.gradle`). With JDK 25 installed, run:
+
+On Windows (PowerShell):
+
+```powershell
+.\gradlew.bat shadowJar
+```
+
+On macOS or Linux:
+
+```sh
+sh ./gradlew shadowJar
+```
+
+The first build needs internet access to download build tools. When the build succeeds, the
+application is available at `build/libs/athena.jar`.
 
 ## Command format
 
 - Words in `UPPER_CASE` are values you supply: `todo DESCRIPTION` becomes `todo Read a book`.
 - Square brackets indicate optional input: `DATE [TIME]` accepts a date alone or a date and time.
   Do not type the brackets.
-- An ellipsis (`…`) would mean zero or more repetitions. No Athena command currently uses repeated parameters.
 - Command words are case-insensitive: `LIST` and `list` work the same way.
 - **Use the parameter order shown.** For example, an event requires `/from` before `/to`.
 - **Use `list` and `bye` without extra arguments.** Extra arguments are rejected, not ignored.
@@ -42,8 +61,12 @@ Adds a task that is due on a particular date, optionally at a particular time.
 
 Format: `deadline DESCRIPTION /by DATE [TIME]`
 
-Example: `deadline Submit assignment /by 5/10/2026` adds a task due on October 5, 2026.
 Both the description and the date are required.
+
+Examples:
+
+- `deadline Submit assignment /by 5/10/2026` adds a task due on October 5, 2026.
+- `deadline Submit assignment /by 5/10/2026 1800` adds a task due on October 5, 2026 at 6:00 PM.
 
 ## Adding an event: `event`
 
